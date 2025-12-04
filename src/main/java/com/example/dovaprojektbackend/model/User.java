@@ -1,15 +1,16 @@
 package com.example.dovaprojektbackend.model;
 
-import com.example.dovaprojektbackend.enums.Role;
+import com.example.dovaprojektbackend.model.enums.Role;
 import jakarta.persistence.*;
-import org.hibernate.annotations.processing.Pattern;
+
+import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "profiles")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -41,12 +42,12 @@ public class User {
         this.role = role;
     }
 
-    public Long getUserId() {
-        return userId;
+    public UUID getUserId() {
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUserId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {
