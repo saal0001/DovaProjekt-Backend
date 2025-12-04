@@ -1,4 +1,5 @@
 package com.example.dovaprojektbackend.model;
 
-public class Cykelist {
+public class Shop {
+    
 }
