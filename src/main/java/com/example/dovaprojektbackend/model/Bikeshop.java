@@ -8,7 +8,6 @@ import java.util.UUID;
 @Table(name = "workshops")
 public class Bikeshop {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     @Column(nullable = false)
@@ -30,9 +29,6 @@ public class Bikeshop {
     private String email;
 
     @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
     private Boolean isVerified = false;
 
     @Column(nullable = false)
@@ -40,14 +36,13 @@ public class Bikeshop {
 
     public Bikeshop() {}
 
-    public Bikeshop(String shopName, String phoneNumber, String openingHours, Integer crNumber, String address, String email, String password) {
+    public Bikeshop(String shopName, String phoneNumber, String openingHours, Integer crNumber, String address, String email) {
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
         this.openingHours = openingHours;
         this.crNumber = crNumber;
         this.address = address;
         this.email = email;
-        this.password = password;
         this.isVerified = false;
         this.isActive = false;
     }
@@ -106,14 +101,6 @@ public class Bikeshop {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public Boolean getVerified() {

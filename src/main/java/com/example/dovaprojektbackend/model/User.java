@@ -9,7 +9,6 @@ import java.util.UUID;
 @Table(name = "profiles")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     @Column(nullable = false)
@@ -17,9 +16,6 @@ public class User {
 
     @Column(unique = true,  nullable = false)
     private String email;
-
-    @Column(nullable = false)
-    private String password;
 
     @Column(unique = true, nullable = false)
     private String phone;
@@ -33,10 +29,9 @@ public class User {
 
     public User(){}
 
-    public User(String name, String email, String password, String phone, String address, Role role) {
+    public User(String name, String email, String phone, String address, Role role) {
         this.name = name;
         this.email = email;
-        this.password = password;
         this.phone = phone;
         this.address = address;
         this.role = role;
@@ -64,14 +59,6 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getPhone() {
