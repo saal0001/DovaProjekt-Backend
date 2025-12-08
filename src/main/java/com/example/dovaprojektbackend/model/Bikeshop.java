@@ -20,7 +20,7 @@ public class Bikeshop {
     private String openingHours;
 
     @Column(nullable = false)
-    private Integer crNumber;
+    private Integer cvrNumber;
 
     @Column(nullable = false)
     private String address;
@@ -36,22 +36,22 @@ public class Bikeshop {
 
     public Bikeshop() {}
 
-    public Bikeshop(String shopName, String phoneNumber, String openingHours, Integer crNumber, String address, String email) {
+    public Bikeshop(String shopName, String phoneNumber, String openingHours, Integer cvrNumber, String address, String email) {
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
         this.openingHours = openingHours;
-        this.crNumber = crNumber;
+        this.cvrNumber = cvrNumber;
         this.address = address;
         this.email = email;
         this.isVerified = false;
         this.isActive = false;
     }
 
-    public UUID id() {
+    public UUID getId() {
         return id;
     }
 
-    public void id(UUID id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -79,12 +79,12 @@ public class Bikeshop {
         this.openingHours = openingHours;
     }
 
-    public Integer getCrNumber() {
-        return crNumber;
+    public Integer getCvrNumber() {
+        return cvrNumber;
     }
 
-    public void setCrNumber(Integer crNumber) {
-        this.crNumber = crNumber;
+    public void setCvrNumber(Integer crNumber) {
+        this.cvrNumber = crNumber;
     }
 
     public String getAddress() {

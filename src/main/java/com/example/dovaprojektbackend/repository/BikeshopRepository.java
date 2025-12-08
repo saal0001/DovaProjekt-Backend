@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface BikeshopRepository extends JpaRepository<Bikeshop, Long> {
     Optional<Bikeshop> findByEmail(String email);
     boolean existsByEmail(String email);
-    boolean existsByCrNumber(Integer crNumber);
+    boolean existsByCvrNumber(Integer crNumber);
 }

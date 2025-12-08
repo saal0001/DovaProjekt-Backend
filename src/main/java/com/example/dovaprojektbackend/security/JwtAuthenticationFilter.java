@@ -1,7 +1,5 @@
 package com.example.dovaprojektbackend.security;
 
-import com.example.dovaprojektbackend.model.User;
-import com.example.dovaprojektbackend.repository.UserRepository;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,11 +21,9 @@ import java.util.UUID;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -43,16 +39,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 // Hent Supabase user ID fra token
                 UUID supabaseUserId = jwtTokenProvider.getSupabaseUserId(token);
 
-                // Hent user fra database via supabase_id
-                User user = userRepository.findById(supabaseUserId)
-                        .orElseThrow(() -> new RuntimeException("User not found with id: " + supabaseUserId));
+                // Hent email fra token
+                String email = jwtTokenProvider.getEmailFromToken(token);
 
-                // Opret authority baseret på user's rolle
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRole().name());
+                // Hent rolle direkte fra JWT token (Supabase custom claim)
+                String role = jwtTokenProvider.getRoleFromToken(token);
 
-                // Opret authentication object
+                // Opret authority baseret på rolle fra token
+                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role);
+
+                // Opret authentication object med user ID og email
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(user, null, List.of(authority));
+                        new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

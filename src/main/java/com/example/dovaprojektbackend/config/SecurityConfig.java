@@ -24,27 +24,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
+                // Deaktiver CSRF (vi bruger stateless JWT)
                 .csrf(csrf -> csrf.disable())
 
-
+                // Aktiver CORS
                 .cors(cors -> cors.configure(http))
 
-
+                // Konfigurer endpoint beskyttelse
                 .authorizeHttpRequests(auth -> auth
+                        // Public endpoints (ingen authentication krævet)
+                        .requestMatchers("/api/auth/**", "/api/health/**").permitAll()
 
-                        .requestMatchers("/api/auth/**").permitAll()
-
-
+                        // Alle andre endpoints kræver authentication
+                        // Role-baseret adgang håndteres via @PreAuthorize på controller methods
                         .anyRequest().authenticated()
                 )
 
-
+                // Stateless session (JWT baseret)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                // Tilføj JWT filter før UsernamePasswordAuthenticationFilter
+                // Tilføj JWT authentication filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
