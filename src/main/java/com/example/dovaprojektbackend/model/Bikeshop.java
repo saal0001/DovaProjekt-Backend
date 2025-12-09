@@ -3,56 +3,53 @@ package com.example.dovaprojektbackend.model;
 import jakarta.persistence.*;
 
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "workshops")
+@Table(name = "bikeshop")
 public class Bikeshop {
     @Id
-    private UUID id;
+    @Column(name = "shop_id")
+    private UUID shopId;
 
-    @Column(nullable = false)
+    @Column(name = "shop_name",nullable = false)
     private String shopName;
 
-    @Column(nullable = false)
-    private String phoneNumber;
+    @Column(name = "phone_number",nullable = false)
+    private Long phoneNumber;
 
-    @Column(nullable = false)
+    @Column(name = "opening_hours", nullable = false)
     private String openingHours;
 
-    @Column(nullable = false)
+    @Column(name = "cvr_number",nullable = false, unique = true)
     private Integer cvrNumber;
 
     @Column(nullable = false)
     private String address;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private Boolean isVerified = false;
-
-    @Column(nullable = false)
-    private Boolean isActive = false;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     public Bikeshop() {}
 
-    public Bikeshop(String shopName, String phoneNumber, String openingHours, Integer cvrNumber, String address, String email) {
+    public Bikeshop(String shopName, Long phoneNumber, String openingHours, Integer cvrNumber, String address, String email) {
         this.shopName = shopName;
         this.phoneNumber = phoneNumber;
         this.openingHours = openingHours;
         this.cvrNumber = cvrNumber;
         this.address = address;
         this.email = email;
-        this.isVerified = false;
-        this.isActive = false;
     }
 
     public UUID getId() {
-        return id;
+        return shopId;
     }
 
     public void setId(UUID id) {
-        this.id = id;
+        this.shopId = id;
     }
 
     public String getShopName() {
@@ -63,11 +60,11 @@ public class Bikeshop {
         this.shopName = shopName;
     }
 
-    public String getPhoneNumber() {
+    public Long getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
+    public void setPhoneNumber(Long phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 
@@ -103,19 +100,4 @@ public class Bikeshop {
         this.email = email;
     }
 
-    public Boolean getVerified() {
-        return isVerified;
-    }
-
-    public void setVerified(Boolean verified) {
-        isVerified = verified;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 }

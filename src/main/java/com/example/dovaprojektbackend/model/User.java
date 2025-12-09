@@ -3,13 +3,15 @@ package com.example.dovaprojektbackend.model;
 import com.example.dovaprojektbackend.model.enums.Role;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "profiles")
+@Table(name = "users")
 public class User {
     @Id
-    private UUID id;
+    @Column(name = "user_id")
+    private UUID userId;
 
     @Column(nullable = false)
     private String name;
@@ -18,7 +20,7 @@ public class User {
     private String email;
 
     @Column(unique = true, nullable = false)
-    private String phone;
+    private Long phone;
 
     @Column(nullable = false)
     private String address;
@@ -27,9 +29,12 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     public User(){}
 
-    public User(String name, String email, String phone, String address, Role role) {
+    public User(String name, String email, Long phone, String address, Role role) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -38,11 +43,11 @@ public class User {
     }
 
     public UUID getUserId() {
-        return id;
+        return userId;
     }
 
     public void setUserId(UUID id) {
-        this.id = id;
+        this.userId = id;
     }
 
     public String getName() {
@@ -61,11 +66,11 @@ public class User {
         this.email = email;
     }
 
-    public String getPhone() {
+    public Long getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(Long phone) {
         this.phone = phone;
     }
 

@@ -33,10 +33,9 @@ public class SecurityConfig {
                 // Konfigurer endpoint beskyttelse
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (ingen authentication krævet)
-                        .requestMatchers("/api/auth/**", "/api/health/**").permitAll()
+                        .requestMatchers("/api/public/**", "/api/health/**").permitAll()
 
                         // Alle andre endpoints kræver authentication
-                        // Role-baseret adgang håndteres via @PreAuthorize på controller methods
                         .anyRequest().authenticated()
                 )
 
