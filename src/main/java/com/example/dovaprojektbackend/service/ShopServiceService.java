@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.dovaprojektbackend.model.ShopService;
-import com.example.dovaprojektbackend.repository.YdelseRepository;
+import com.example.dovaprojektbackend.repository.ShopServiceRepository;
 
 @Service
-public class YdelseService {
+public class ShopServiceService {
 
     @Autowired
-    private YdelseRepository ydelserRepository;
+    private ShopServiceRepository ydelserRepository;
 
     public ShopService createYdelser(ShopService ydelser) {
         return ydelserRepository.save(ydelser);

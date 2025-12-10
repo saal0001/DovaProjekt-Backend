@@ -10,9 +10,4 @@ public class BikeShopService {
 
     @Autowired
     private BikeshopRepository bikeShopRepository;
-
-    public Bikeshop createShop(Bikeshop bikeshop) {
-        return bikeShopRepository.save(bikeshop);
-    }
-    
 }
