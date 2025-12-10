@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.dovaprojektbackend.model.Ydelse;
+import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.service.YdelseService;
 
 @RestController
@@ -17,8 +17,8 @@ public class YdelseController {
     YdelseService ydelseService;
 
     @PostMapping("/create")
-    public Ydelse createYdelse(@RequestBody Ydelse ydelse) {
-        return ydelseService.createYdelser(ydelse);
+    public ShopService createYdelse(@RequestBody ShopService shopService) {
+        return ydelseService.createYdelser(shopService);
     }
     
 

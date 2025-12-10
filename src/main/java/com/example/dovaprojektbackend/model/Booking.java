@@ -1,6 +1,5 @@
 package com.example.dovaprojektbackend.model;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 
 import com.example.dovaprojektbackend.enums.BookingStatus;
@@ -8,7 +7,7 @@ import com.example.dovaprojektbackend.enums.BookingStatus;
 import jakarta.persistence.*;
 
 @Entity
-public class Bookings {
+public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Id
@@ -19,11 +18,11 @@ public class Bookings {
     private BookingStatus status;
     private LocalDateTime createdAt;
 
-    public Bookings() {
+    public Booking() {
 
     }
 
-    public Bookings(int bookingId, int shopId, int customerId, BookingStatus status, LocalDateTime createdAt) {
+    public Booking(int bookingId, int shopId, int customerId, BookingStatus status, LocalDateTime createdAt) {
         this.bookingId = bookingId;
         this.shopId = shopId;
         this.customerId = customerId;

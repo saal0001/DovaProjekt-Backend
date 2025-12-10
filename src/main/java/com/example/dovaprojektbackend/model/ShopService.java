@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 
 @Entity
 
-public class Ydelse {
+public class ShopService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +25,10 @@ public class Ydelse {
         return id;
     }
 
-    public Ydelse() {
+    public ShopService() {
     }
 
-    public Ydelse(int id, String name, double price, String duration, String description, Bikeshop bikeShop) {
+    public ShopService(int id, String name, double price, String duration, String description, Bikeshop bikeShop) {
         this.id = id;
         this.name = name;
         this.price = price;
