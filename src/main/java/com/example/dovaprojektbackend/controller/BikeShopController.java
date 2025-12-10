@@ -1,24 +1,24 @@
 package com.example.dovaprojektbackend.controller;
 
+import com.example.dovaprojektbackend.model.Bikeshop;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.dovaprojektbackend.model.Shop;
-import com.example.dovaprojektbackend.service.ShopService;
+import com.example.dovaprojektbackend.service.BikeShopService;
 
 @RestController
 @RequestMapping("/shops")
-public class ShopController {
+public class BikeShopController {
 
     @Autowired
-    ShopService shopService;
+    BikeShopService bikeShopService;
 
     @PostMapping("/create")
-    public Shop createShop(@RequestBody Shop shop) {
-        return shopService.createShop(shop);
+    public Bikeshop createShop(@RequestBody Bikeshop bikeShop) {
+        return bikeShopService.createShop(bikeShop);
     }
     
 }

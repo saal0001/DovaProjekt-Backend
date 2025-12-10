@@ -6,19 +6,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.dovaprojektbackend.model.Ydelse;
-import com.example.dovaprojektbackend.service.YdelseService;
+import com.example.dovaprojektbackend.model.ShopService;
+import com.example.dovaprojektbackend.service.ShopServiceService;
 
 @RestController
 @RequestMapping("/ydelser")
-public class YdelseController {
+public class ShopServiceController {
 
     @Autowired
-    YdelseService ydelseService;
+    ShopServiceService shopServiceService;
 
     @PostMapping("/create")
-    public Ydelse createYdelse(@RequestBody Ydelse ydelse) {
-        return ydelseService.createYdelser(ydelse);
+    public ShopService createYdelse(@RequestBody ShopService shopService) {
+        return shopServiceService.createYdelser(shopService);
     }
     
 

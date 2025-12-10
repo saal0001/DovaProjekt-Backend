@@ -1,4 +1,4 @@
-package com.example.dovaprojektbackend.enums;
+package com.example.dovaprojektbackend.model.enums;
 
 public enum BookingStatus {
     NYORDRE,
