@@ -2,6 +2,7 @@ package com.example.dovaprojektbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.time.LocalDateTime;
 
@@ -29,6 +30,9 @@ public class Bikeshop {
 
     @Column(unique = true, nullable = false)
     private String email;
+
+    @OneToMany (cascade = CascadeType.ALL, mappedBy = "bikeshop")
+    private Collection<ShopService> shopServices;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

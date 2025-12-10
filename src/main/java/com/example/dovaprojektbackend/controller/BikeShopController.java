@@ -11,7 +11,7 @@ import com.example.dovaprojektbackend.service.BikeShopService;
 
 @RestController
 @RequestMapping("/shops")
-public class ShopController {
+public class BikeShopController {
 
     @Autowired
     BikeShopService bikeShopService;
