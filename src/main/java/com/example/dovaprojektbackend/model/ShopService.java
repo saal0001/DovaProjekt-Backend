@@ -3,41 +3,54 @@ package com.example.dovaprojektbackend.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
-
+@Table(name = "services")
 public class ShopService {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "service_id")
+    private Integer id;
+
+    @Column(nullable = false, length = 100)
     private String name;
-    private double price;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal price;
+
+    @Column(length = 100)
     private String duration;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
-    
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     @ManyToOne
-    @JoinColumn(name = "bikeShopFK", referencedColumnName = "bikeShopID")
+    @JoinColumn(name = "shop_id", nullable = false)
     @JsonBackReference
-    private Bikeshop bikeShop;
+    private Bikeshop bikeshop;
 
-    public int getId() {
-        return id;
-    }
+    public ShopService() {}
 
-    public ShopService() {
-    }
-
-    public ShopService(int id, String name, double price, String duration, String description, Bikeshop bikeShop) {
+    public ShopService(Integer id, String name, BigDecimal price, String duration, String description, Bikeshop bikeshop) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.duration = duration;
         this.description = description;
-        this.bikeShop = bikeShop;
+        this.bikeshop = bikeshop;
     }
 
-    public void setId(int id) {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -49,11 +62,11 @@ public class ShopService {
         this.name = name;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -73,12 +86,19 @@ public class ShopService {
         this.description = description;
     }
 
-    public Bikeshop getShop() {
-        return bikeShop;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setShop(Bikeshop bikeShop) {
-        this.bikeShop = bikeShop;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
+    public Bikeshop getBikeshop() {
+        return bikeshop;
+    }
+
+    public void setBikeshop(Bikeshop bikeshop) {
+        this.bikeshop = bikeshop;
+    }
 }

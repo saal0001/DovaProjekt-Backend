@@ -2,62 +2,69 @@ package com.example.dovaprojektbackend.model;
 
 import java.time.LocalDateTime;
 
-import com.example.dovaprojektbackend.enums.BookingStatus;
+import com.example.dovaprojektbackend.model.enums.BookingStatus;
 
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "booking")
 public class Booking {
-
-    @Enumerated(EnumType.STRING)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookingId;
-    private int shopId;
-    private int customerId;
+    @Column(name = "booking_id")
+    private Integer bookingId;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id", nullable = false)
+    private User user;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private BookingStatus status;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     public Booking() {
 
     }
 
-    public Booking(int bookingId, int shopId, int customerId, BookingStatus status, LocalDateTime createdAt) {
-        this.bookingId = bookingId;
-        this.shopId = shopId;
-        this.customerId = customerId;
+    public Booking(User user, BookingStatus status, LocalDateTime createdAt) {
+        this.user = user;
         this.status = status;
         this.createdAt = createdAt;
     }
-    public int getBookingId() {
+
+    public Integer getBookingId() {
         return bookingId;
     }
-    public void setBookingId(int bookingId) {
+
+    public void setBookingId(Integer bookingId) {
         this.bookingId = bookingId;
     }
-    public int getShopId() {
-        return shopId;
+
+    public User getUser() {
+        return user;
     }
-    public void setShopId(int shopId) {
-        this.shopId = shopId;
+
+    public void setUser(User user) {
+        this.user = user;
     }
-    public int getCustomerId() {
-        return customerId;
-    }
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
-    }
+
     public BookingStatus getStatus() {
         return status;
     }
+
     public void setStatus(BookingStatus status) {
         this.status = status;
     }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-    
+
 }
