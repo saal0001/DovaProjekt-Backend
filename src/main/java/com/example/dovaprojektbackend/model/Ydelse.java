@@ -17,9 +17,9 @@ public class Ydelse {
     private String description;
     
     @ManyToOne
-    @JoinColumn(name = "shopFK", referencedColumnName = "shopID")
+    @JoinColumn(name = "bikeShopFK", referencedColumnName = "bikeShopID")
     @JsonBackReference
-    private Shop shop;
+    private Bikeshop bikeShop;
 
     public int getId() {
         return id;
@@ -28,13 +28,13 @@ public class Ydelse {
     public Ydelse() {
     }
 
-    public Ydelse(int id, String name, double price, String duration, String description, Shop shop) {
+    public Ydelse(int id, String name, double price, String duration, String description, Bikeshop bikeShop) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.duration = duration;
         this.description = description;
-        this.shop = shop;
+        this.bikeShop = bikeShop;
     }
 
     public void setId(int id) {
@@ -73,12 +73,12 @@ public class Ydelse {
         this.description = description;
     }
 
-    public Shop getShop() {
-        return shop;
+    public Bikeshop getShop() {
+        return bikeShop;
     }
 
-    public void setShop(Shop shop) {
-        this.shop = shop;
+    public void setShop(Bikeshop bikeShop) {
+        this.bikeShop = bikeShop;
     }
 
 }
