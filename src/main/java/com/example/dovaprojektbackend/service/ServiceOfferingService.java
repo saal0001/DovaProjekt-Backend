@@ -7,13 +7,13 @@ import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.repository.ShopServiceRepository;
 
 @Service
-public class ShopServiceService {
+public class ServiceOfferingService {
 
-    @Autowired
-    private ShopServiceRepository ydelserRepository;
 
-    public ShopService createYdelser(ShopService ydelser) {
-        return ydelserRepository.save(ydelser);
+    private ShopServiceRepository shopServiceRepository;
+
+    public ServiceOfferingService (ShopServiceRepository shopServiceRepository) {
+        this.shopServiceRepository = shopServiceRepository;
     }
     
 }

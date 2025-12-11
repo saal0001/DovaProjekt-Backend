@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "services")
 public class ShopService {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "service_id")
-    private Integer id;
+    private UUID ShopServiceId;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -37,8 +37,8 @@ public class ShopService {
 
     public ShopService() {}
 
-    public ShopService(Integer id, String name, BigDecimal price, String duration, String description, Bikeshop bikeshop) {
-        this.id = id;
+    public ShopService(UUID ShopServiceId, String name, BigDecimal price, String duration, String description, Bikeshop bikeshop) {
+        this.ShopServiceId = ShopServiceId;
         this.name = name;
         this.price = price;
         this.duration = duration;
@@ -46,12 +46,12 @@ public class ShopService {
         this.bikeshop = bikeshop;
     }
 
-    public Integer getId() {
-        return id;
+    public UUID getShopServiceId() {
+        return ShopServiceId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setId(UUID ShopServiceId) {
+        this.ShopServiceId = ShopServiceId;
     }
 
     public String getName() {

@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.dovaprojektbackend.model.Booking;
 
-public interface BookingsRepository extends JpaRepository<Booking, Integer> {
+import java.util.UUID;
+
+public interface BookingsRepository extends JpaRepository<Booking, UUID> {
     
 }
