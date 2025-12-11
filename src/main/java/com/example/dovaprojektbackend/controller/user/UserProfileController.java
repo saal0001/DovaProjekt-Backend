@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
-@PreAuthorize("hasRole('CUSTOMER')")
+@PreAuthorize("hasRole('customer')")
 public class UserProfileController {
 
     private final UserService userService;
