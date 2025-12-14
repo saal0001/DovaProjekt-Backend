@@ -14,6 +14,13 @@ public class Booking {
     @Column(name = "booking_id")
     private UUID bookingId;
 
+    @PrePersist
+    public void prePersist() {
+        if (bookingId == null) {
+            bookingId = UUID.randomUUID();
+        }
+    }
+
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
