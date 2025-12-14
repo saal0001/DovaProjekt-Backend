@@ -80,7 +80,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 } else if (devJwtTokenProvider != null && isTokenValid) {
                     userId = devJwtTokenProvider.getSupabaseUserId(token);
                     email = devJwtTokenProvider.getEmailFromToken(token);
-                    role = "SHOP";
                 }
 
 

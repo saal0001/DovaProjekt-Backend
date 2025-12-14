@@ -20,8 +20,4 @@ public class DevJwtTokenProvider {
     public String getEmailFromToken(String token) {
         return "test@example.com";
     }
-
-    public String getRoleFromToken(String token) {
-        return "USER";
-    }
 }

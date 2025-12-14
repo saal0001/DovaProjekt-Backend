@@ -30,10 +30,12 @@ public class SecurityConfig {
                 // Aktiver CORS
                 .cors(cors -> cors.configure(http))
 
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
                 // Konfigurer endpoint beskyttelse
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (ingen authentication krævet)
-                        .requestMatchers("/api/public/**", "/api/health/**").permitAll()
+                        .requestMatchers("/api/public/**", "/api/health/**","/h2-console/**").permitAll()
 
                         // Alle andre endpoints kræver authentication
                         .anyRequest().authenticated()
