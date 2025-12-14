@@ -2,11 +2,13 @@ package com.example.dovaprojektbackend.security;
 
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import com.example.dovaprojektbackend.repository.UserRepository;
+import com.example.dovaprojektbackend.service.DevJwtTokenProvider;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,14 +25,28 @@ import java.util.UUID;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final BikeshopRepository bikeshopRepository;
+    private DevJwtTokenProvider devJwtTokenProvider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository, BikeshopRepository bikeshopRepository) {
+    public JwtAuthenticationFilter(
+            @Autowired(required = false) JwtTokenProvider jwtTokenProvider,
+            @Autowired(required = false) DevJwtTokenProvider devJwtTokenProvider,
+            UserRepository userRepository,
+            BikeshopRepository bikeshopRepository) {
+
         this.jwtTokenProvider = jwtTokenProvider;
+        this.devJwtTokenProvider = devJwtTokenProvider;
         this.userRepository = userRepository;
         this.bikeshopRepository = bikeshopRepository;
+
+        // Validation: at least one provider must be available
+        if (jwtTokenProvider == null && devJwtTokenProvider == null) {
+            throw new IllegalStateException(
+                    "At least one JWT token provider must be available (JwtTokenProvider or DevJwtTokenProvider)"
+            );
+        }
     }
 
     @Override
@@ -41,27 +57,47 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // Hent JWT token fra Authorization header
             String token = getJwtFromRequest(request);
 
+            UUID userId = null;
+            String email = null;
+            String role = null;
+
             // Valider token og hent user data
-            if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
-                UUID userId = jwtTokenProvider.getSupabaseUserId(token);
-                String email = jwtTokenProvider.getEmailFromToken(token);
-
-                // Hent rolle fra DATABASE i stedet for JWT token
-                String role = determineUserRole(userId);
-
-                if (role != null) {
-                    // Opret authority baseret på rolle fra database
-                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
-
-                    // Opret authentication object med user ID og email
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
-
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                    // Sæt authentication i SecurityContext
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (StringUtils.hasText(token)) {
+                boolean isTokenValid = false;
+                if (jwtTokenProvider != null){
+                    isTokenValid = jwtTokenProvider.validateToken(token);
+                } else if (devJwtTokenProvider != null) {
+                    isTokenValid = devJwtTokenProvider.validateToken(token);
                 }
+
+               if (isTokenValid){
+                   if (jwtTokenProvider != null){
+                       userId = jwtTokenProvider.getSupabaseUserId(token);
+                       email = jwtTokenProvider.getEmailFromToken(token);
+
+                       // Hent rolle fra DATABASE i stedet for JWT token
+                       role = determineUserRole(userId);
+                   } else if (devJwtTokenProvider != null) {
+                       userId = devJwtTokenProvider.getSupabaseUserId(token);
+                       email = devJwtTokenProvider.getEmailFromToken(token);
+                   }
+
+
+                   if (role != null) {
+                       // Opret authority baseret på rolle fra database
+                       SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+
+                       // Opret authentication object med user ID og email
+                       UsernamePasswordAuthenticationToken authentication =
+                               new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
+
+                       authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                       // Sæt authentication i SecurityContext
+                       SecurityContextHolder.getContext().setAuthentication(authentication);
+                   }
+               }
+
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);

@@ -1,6 +1,7 @@
 package com.example.dovaprojektbackend.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
 
@@ -10,9 +11,8 @@ import jakarta.persistence.*;
 @Table(name = "booking")
 public class Booking {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
-    private Integer bookingId;
+    private UUID bookingId;
 
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)
@@ -35,11 +35,11 @@ public class Booking {
         this.createdAt = createdAt;
     }
 
-    public Integer getBookingId() {
+    public UUID getBookingId() {
         return bookingId;
     }
 
-    public void setBookingId(Integer bookingId) {
+    public void setBookingId(UUID bookingId) {
         this.bookingId = bookingId;
     }
 
