@@ -70,32 +70,34 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     isTokenValid = devJwtTokenProvider.validateToken(token);
                 }
 
+               if (isTokenValid){
+                   if (jwtTokenProvider != null){
+                       userId = jwtTokenProvider.getSupabaseUserId(token);
+                       email = jwtTokenProvider.getEmailFromToken(token);
 
-                if (jwtTokenProvider != null && isTokenValid){
-                    userId = jwtTokenProvider.getSupabaseUserId(token);
-                    email = jwtTokenProvider.getEmailFromToken(token);
-
-                    // Hent rolle fra DATABASE i stedet for JWT token
-                    role = determineUserRole(userId);
-                } else if (devJwtTokenProvider != null && isTokenValid) {
-                    userId = devJwtTokenProvider.getSupabaseUserId(token);
-                    email = devJwtTokenProvider.getEmailFromToken(token);
-                }
+                       // Hent rolle fra DATABASE i stedet for JWT token
+                       role = determineUserRole(userId);
+                   } else if (devJwtTokenProvider != null) {
+                       userId = devJwtTokenProvider.getSupabaseUserId(token);
+                       email = devJwtTokenProvider.getEmailFromToken(token);
+                   }
 
 
-                if (role != null) {
-                    // Opret authority baseret på rolle fra database
-                    SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+                   if (role != null) {
+                       // Opret authority baseret på rolle fra database
+                       SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
 
-                    // Opret authentication object med user ID og email
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
+                       // Opret authentication object med user ID og email
+                       UsernamePasswordAuthenticationToken authentication =
+                               new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
 
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                       authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                    // Sæt authentication i SecurityContext
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
+                       // Sæt authentication i SecurityContext
+                       SecurityContextHolder.getContext().setAuthentication(authentication);
+                   }
+               }
+
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
