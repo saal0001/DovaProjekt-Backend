@@ -13,6 +13,13 @@ public class User {
     @Column(name = "user_id")
     private UUID userId;
 
+    @PrePersist
+    public void prePersist() {
+        if (userId == null) {
+            userId = UUID.randomUUID();
+        }
+    }
+
     @Column(nullable = false)
     private String name;
 

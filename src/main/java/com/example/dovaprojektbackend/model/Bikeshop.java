@@ -2,7 +2,9 @@ package com.example.dovaprojektbackend.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.time.LocalDateTime;
 
@@ -12,6 +14,13 @@ public class Bikeshop {
     @Id
     @Column(name = "shop_id")
     private UUID shopId;
+
+    @PrePersist
+    public void prePersist() {
+        if (shopId == null) {
+            shopId = UUID.randomUUID();
+        }
+    }
 
     @Column(name = "shop_name",nullable = false)
     private String shopName;
@@ -32,7 +41,7 @@ public class Bikeshop {
     private String email;
 
     @OneToMany (cascade = CascadeType.ALL, mappedBy = "bikeshop")
-    private Collection<ShopService> shopServices;
+    private List<ShopService> shopServices = new ArrayList<>();
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
