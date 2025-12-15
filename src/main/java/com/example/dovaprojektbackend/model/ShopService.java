@@ -2,6 +2,7 @@ package com.example.dovaprojektbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,7 +14,14 @@ public class ShopService {
 
     @Id
     @Column(name = "service_id")
-    private UUID ShopServiceId;
+    private UUID shopServiceId;
+
+    @PrePersist
+    public void prePersist() {
+        if (shopServiceId == null) {
+            shopServiceId = UUID.randomUUID();
+        }
+    }
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -35,10 +43,14 @@ public class ShopService {
     @JsonBackReference
     private Bikeshop bikeshop;
 
+    @Transient  // Not saved to database
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  // Only for input
+    private UUID shopId;
+
     public ShopService() {}
 
     public ShopService(UUID ShopServiceId, String name, BigDecimal price, String duration, String description, Bikeshop bikeshop) {
-        this.ShopServiceId = ShopServiceId;
+        this.shopServiceId = ShopServiceId;
         this.name = name;
         this.price = price;
         this.duration = duration;
@@ -47,11 +59,11 @@ public class ShopService {
     }
 
     public UUID getShopServiceId() {
-        return ShopServiceId;
+        return shopServiceId;
     }
 
     public void setId(UUID ShopServiceId) {
-        this.ShopServiceId = ShopServiceId;
+        this.shopServiceId = ShopServiceId;
     }
 
     public String getName() {
@@ -100,5 +112,13 @@ public class ShopService {
 
     public void setBikeshop(Bikeshop bikeshop) {
         this.bikeshop = bikeshop;
+    }
+
+    public UUID getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(UUID shopId) {
+        this.shopId = shopId;
     }
 }

@@ -1,16 +1,18 @@
 package com.example.dovaprojektbackend.security;
 
-import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import com.example.dovaprojektbackend.repository.UserRepository;
+import com.example.dovaprojektbackend.service.DevJwtTokenProvider;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -23,94 +25,111 @@ import java.util.UUID;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final BikeshopRepository bikeshopRepository;
+    private DevJwtTokenProvider devJwtTokenProvider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UserRepository userRepository, BikeshopRepository bikeshopRepository) {
+    public JwtAuthenticationFilter(
+            @Autowired(required = false) JwtTokenProvider jwtTokenProvider,
+            @Autowired(required = false) DevJwtTokenProvider devJwtTokenProvider,
+            UserRepository userRepository,
+            BikeshopRepository bikeshopRepository) {
+
         this.jwtTokenProvider = jwtTokenProvider;
+        this.devJwtTokenProvider = devJwtTokenProvider;
         this.userRepository = userRepository;
         this.bikeshopRepository = bikeshopRepository;
+
+        // Validation: at least one provider must be available
+        if (jwtTokenProvider == null && devJwtTokenProvider == null) {
+            throw new IllegalStateException(
+                    "At least one JWT token provider must be available (JwtTokenProvider or DevJwtTokenProvider)"
+            );
+        }
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        System.out.println("\n========== JWT FILTER START ==========");
-        System.out.println("Request URI: " + request.getRequestURI());
-        System.out.println("Request Method: " + request.getMethod());
-
         try {
+            // Hent JWT token fra Authorization header
             String token = getJwtFromRequest(request);
 
-            System.out.println("Token present: " + (token != null));
-            if (token != null) {
-                System.out.println("Token (first 20 chars): " + token.substring(0, Math.min(20, token.length())) + "...");
-            }
+            UUID userId = null;
+            String email = null;
+            String role = null;
 
+            // Valider token og hent user data
             if (StringUtils.hasText(token)) {
-                System.out.println("Validating token...");
-                boolean isValid = jwtTokenProvider.validateToken(token);
-                System.out.println("Token valid: " + isValid);
-
-                if (isValid) {
-                    UUID userId = jwtTokenProvider.getSupabaseUserId(token);
-                    String email = jwtTokenProvider.getEmailFromToken(token);
-
-                    System.out.println("User ID from token: " + userId);
-                    System.out.println("Email from token: " + email);
-
-                    String roleString = determineUserRole(userId);
-                    System.out.println("Role from database: " + roleString);
-
-                    if (roleString != null) {
-                        Role role = Role.valueOf(roleString);
-
-                        CustomUserPrincipal principal = new CustomUserPrincipal(userId, email, role);
-
-                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + roleString.toUpperCase());
-                        System.out.println("Authority created: " + authority.getAuthority());
-
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
-
-                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                        System.out.println("✅ Authentication set successfully!");
-                        System.out.println("Principal: " + SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-                        System.out.println("Authorities: " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
-                    } else {
-                        System.out.println("❌ No role found for user in database!");
-                    }
-                } else {
-                    System.out.println("❌ Token validation failed!");
+                boolean isTokenValid = false;
+                if (jwtTokenProvider != null){
+                    isTokenValid = jwtTokenProvider.validateToken(token);
+                } else if (devJwtTokenProvider != null) {
+                    isTokenValid = devJwtTokenProvider.validateToken(token);
                 }
-            } else {
-                System.out.println("❌ No token provided in request");
+
+               if (isTokenValid){
+                   if (jwtTokenProvider != null){
+                       userId = jwtTokenProvider.getSupabaseUserId(token);
+                       email = jwtTokenProvider.getEmailFromToken(token);
+
+                       // Hent rolle fra DATABASE i stedet for JWT token
+                       role = determineUserRole(userId);
+                   } else if (devJwtTokenProvider != null) {
+                       userId = devJwtTokenProvider.getSupabaseUserId(token);
+                       email = devJwtTokenProvider.getEmailFromToken(token);
+                   }
+
+
+                   if (role != null) {
+                       // Opret authority baseret på rolle fra database
+                       SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+
+                       // Opret authentication object med user ID og email
+                       UsernamePasswordAuthenticationToken authentication =
+                               new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
+
+                       authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                       // Sæt authentication i SecurityContext
+                       SecurityContextHolder.getContext().setAuthentication(authentication);
+                   }
+               }
+
             }
         } catch (Exception ex) {
-            System.out.println("❌ EXCEPTION in JWT filter: " + ex.getMessage());
-            ex.printStackTrace();
+            logger.error("Could not set user authentication in security context", ex);
         }
 
-        System.out.println("========== JWT FILTER END ==========\n");
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Finder brugerens rolle fra database
+     * Tjekker først i users tabel, derefter i bikeshop tabel
+     * @param userId Brugerens UUID
+     * @return Rolle som String (CUSTOMER, ADMIN, eller SHOP), eller null hvis ikke fundet
+     */
     private String determineUserRole(UUID userId) {
+        // Tjek i users tabel først
         return userRepository.findById(userId)
                 .map(user -> user.getRole())
                 .map(role -> role.name())
                 .orElseGet(() -> {
-                    return bikeshopRepository.existsById(userId) ? "shop" : null;
+                    // Hvis ikke i users, tjek om det er en bikeshop
+                    return bikeshopRepository.existsById(userId) ? "SHOP" : null;
                 });
     }
 
+    /**
+     * Henter JWT token fra Authorization header
+     * @param request HTTP request
+     * @return JWT token uden "Bearer " prefix
+     */
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
-        System.out.println("Authorization header: " + bearerToken);
 
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
