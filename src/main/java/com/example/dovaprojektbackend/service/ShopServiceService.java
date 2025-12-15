@@ -25,5 +25,5 @@ public class ShopServiceService {
 
         return ydelserRepository.save(ydelser);
     }
-    
+
 }
