@@ -25,7 +25,7 @@ public class Bikeshop {
     @Column(name = "shop_name",nullable = false)
     private String shopName;
 
-    @Column(name = "phone_number",nullable = false)
+    @Column(name = "phone_number",nullable = false,unique = true )
     private Long phoneNumber;
 
     @Column(name = "opening_hours", nullable = false)

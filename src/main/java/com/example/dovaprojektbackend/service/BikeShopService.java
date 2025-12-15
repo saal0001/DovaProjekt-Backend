@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class BikeShopService {
 
-    @Autowired
-    private BikeshopRepository bikeShopRepository;
 
-   public Bikeshop createShop(Bikeshop bikeshop){
-       return bikeShopRepository.save(bikeshop);
+    private final BikeshopRepository bikeShopRepository;
+
+   public BikeShopService(BikeshopRepository bikeShopRepository){
+       this.bikeShopRepository = bikeShopRepository;
    }
 
 }

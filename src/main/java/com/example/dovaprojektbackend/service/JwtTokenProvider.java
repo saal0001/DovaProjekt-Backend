@@ -14,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 @Service
-@Profile("prod")
+//@Profile("prod")
 public class JwtTokenProvider {
 
     private final SecretKey secretKey;

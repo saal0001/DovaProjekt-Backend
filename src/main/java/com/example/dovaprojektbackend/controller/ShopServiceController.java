@@ -1,20 +1,25 @@
 package com.example.dovaprojektbackend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.dovaprojektbackend.service.ShopServiceService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dovaprojektbackend.model.ShopService;
-import com.example.dovaprojektbackend.service.ShopServiceService;
 
 @RestController
 @RequestMapping("/ydelser")
+@PreAuthorize("hasAuthority('SHOP')")
 public class ShopServiceController {
 
-    @Autowired
-    ShopServiceService shopServiceService;
+
+    private final ShopServiceService  shopServiceService;
+
+    public ShopServiceController(ShopServiceService  shopServiceService) {
+        this.shopServiceService = shopServiceService;
+    }
 
     @PostMapping("/create")
     public ShopService createYdelse(@RequestBody ShopService shopService) {

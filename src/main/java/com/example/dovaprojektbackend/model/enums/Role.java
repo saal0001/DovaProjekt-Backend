@@ -1,8 +1,7 @@
 package com.example.dovaprojektbackend.model.enums;
 
 public enum Role {
-    CUSTOMER,
-    ADMIN,
-    SHOP
-
+    customer,  // små bogstaver for at matche database
+    admin,
+    shop
 }
