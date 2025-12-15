@@ -12,7 +12,7 @@ import com.example.dovaprojektbackend.service.ServiceOfferingService;
 
 @RestController
 @RequestMapping("/ydelser")
-@PreAuthorize("hasRole('SHOP')")
+@PreAuthorize("hasAuthority('SHOP')")
 public class ShopServiceController {
 
     @Autowired

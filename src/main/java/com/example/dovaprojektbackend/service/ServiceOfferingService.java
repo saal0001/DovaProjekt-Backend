@@ -15,5 +15,7 @@ public class ServiceOfferingService {
     public ServiceOfferingService (ShopServiceRepository shopServiceRepository) {
         this.shopServiceRepository = shopServiceRepository;
     }
+
+
     
 }
