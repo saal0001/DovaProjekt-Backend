@@ -24,10 +24,10 @@ import java.util.UUID;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final BikeshopRepository bikeshopRepository;
-    private DevJwtTokenProvider devJwtTokenProvider;
+    private final DevJwtTokenProvider devJwtTokenProvider;
 
     public JwtAuthenticationFilter(
             @Autowired(required = false) JwtTokenProvider jwtTokenProvider,
