@@ -1,5 +1,6 @@
 package com.example.dovaprojektbackend.security;
 
+import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import com.example.dovaprojektbackend.repository.UserRepository;
 import com.example.dovaprojektbackend.service.DevJwtTokenProvider;
@@ -86,9 +87,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                        // Opret authority baseret på rolle fra database
                        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
 
+                       CustomUserPrincipal principal =
+                               new CustomUserPrincipal(
+                                       userId,
+                                       email,
+                                       Role.valueOf(role)
+                               );
+
                        // Opret authentication object med user ID og email
                        UsernamePasswordAuthenticationToken authentication =
-                               new UsernamePasswordAuthenticationToken(email, null, List.of(authority));
+                               new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
 
                        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 

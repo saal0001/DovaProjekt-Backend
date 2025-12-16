@@ -11,10 +11,17 @@ import com.example.dovaprojektbackend.repository.ShopServiceRepository;
 @Service
 public class ShopServiceService {
 
-    @Autowired
-    private ShopServiceRepository ydelserRepository;
-    @Autowired
-    BikeshopRepository bikeshopRepository;
+
+    private final ShopServiceRepository ydelserRepository;
+
+    private final BikeshopRepository bikeshopRepository;
+
+    public ShopServiceService(ShopServiceRepository ydelserRepository,BikeshopRepository bikeshopRepository ){
+        this.ydelserRepository = ydelserRepository;
+        this.bikeshopRepository = bikeshopRepository;
+    }
+
+
 
     public ShopService createYdelser(ShopService ydelser) {
         if (ydelser.getShopId() != null) {
