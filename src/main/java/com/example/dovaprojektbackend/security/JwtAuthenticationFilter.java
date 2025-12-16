@@ -80,6 +80,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                    } else if (devJwtTokenProvider != null) {
                        userId = devJwtTokenProvider.getSupabaseUserId(token);
                        email = devJwtTokenProvider.getEmailFromToken(token);
+                       role = determineUserRole(userId);
                    }
 
 
