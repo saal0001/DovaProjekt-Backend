@@ -3,6 +3,7 @@ package com.example.dovaprojektbackend.controller;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class BikeShopController {
     private final BikeShopService bikeShopService;
     private final SupabaseAuthService supabaseAuthService;
 
-    public BikeShopController(BikeShopService bikeShopService, SupabaseAuthService supabaseAuthService) {
+    public BikeShopController(BikeShopService bikeShopService, @Autowired(required = false) SupabaseAuthService supabaseAuthService) {
         this.bikeShopService = bikeShopService;
         this.supabaseAuthService = supabaseAuthService;
     }
