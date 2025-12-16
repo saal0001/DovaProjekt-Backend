@@ -34,24 +34,24 @@ public class UserProfileController {
     }
 
     @GetMapping("/{userId}")
-    @PreAuthorize("#userId == authentication.principal.userId() and hasRole('CUSTOMER')")
+    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
     public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
         User user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
 
     @PutMapping("/{userId}")
-    @PreAuthorize("#userId == authentication.principal.userId() and hasRole('CUSTOMER')")
+    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
     public ResponseEntity<User> updateUser(@PathVariable UUID userId, @RequestBody User user) {
         User userUpdated = userService.updateUser(userId, user);
         return ResponseEntity.ok(userUpdated);
     }
 
     @DeleteMapping("/delete-account/{userId}")
-    @PreAuthorize("#userId == authentication.principal.userId() and hasRole('CUSTOMER')")
+    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
     public ResponseEntity<Void> deleteAccount(@PathVariable UUID userId) {
-        supabaseAuthService.deleteUser(userId);
         userService.deleteUser(userId);
+        supabaseAuthService.deleteUser(userId);
         return ResponseEntity.ok().build();
     }
 }
