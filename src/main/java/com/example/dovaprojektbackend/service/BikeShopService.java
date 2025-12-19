@@ -55,7 +55,7 @@ public class BikeShopService {
 
    public void deleteBikeShop(UUID shopId){
        Bikeshop bikeshop = getBikeShopById(shopId);
-       bikeShopRepository.deleteById(bikeshop.getId());
+       bikeShopRepository.deleteById(bikeshop.getShopId());
    }
 
 }

@@ -28,7 +28,7 @@ public class UserProfileController {
 
     // Hent alle shops for kunder
     @GetMapping("/bikeshops")
-    @PreAuthorize("hasRole('CUSTOMER')")
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'SHOP')")
     public ResponseEntity<List<Bikeshop>> findAllBikeshops(){
         return ResponseEntity.ok(bikeShopService.findAll());
     }
