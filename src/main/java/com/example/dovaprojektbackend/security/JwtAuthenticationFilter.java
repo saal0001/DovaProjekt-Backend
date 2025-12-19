@@ -3,7 +3,6 @@ package com.example.dovaprojektbackend.security;
 import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import com.example.dovaprojektbackend.repository.UserRepository;
-import com.example.dovaprojektbackend.service.DevJwtTokenProvider;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,25 +27,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final BikeshopRepository bikeshopRepository;
-    private final DevJwtTokenProvider devJwtTokenProvider;
 
     public JwtAuthenticationFilter(
             @Autowired(required = false) JwtTokenProvider jwtTokenProvider,
-            @Autowired(required = false) DevJwtTokenProvider devJwtTokenProvider,
             UserRepository userRepository,
             BikeshopRepository bikeshopRepository) {
 
         this.jwtTokenProvider = jwtTokenProvider;
-        this.devJwtTokenProvider = devJwtTokenProvider;
         this.userRepository = userRepository;
         this.bikeshopRepository = bikeshopRepository;
 
-        // Validation: at least one provider must be available
-        if (jwtTokenProvider == null && devJwtTokenProvider == null) {
-            throw new IllegalStateException(
-                    "At least one JWT token provider must be available (JwtTokenProvider or DevJwtTokenProvider)"
-            );
-        }
     }
 
     @Override
@@ -63,23 +53,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // Valider token og hent user data
             if (StringUtils.hasText(token)) {
-                boolean isTokenValid = false;
-                if (jwtTokenProvider != null){
-                    isTokenValid = jwtTokenProvider.validateToken(token);
-                } else if (devJwtTokenProvider != null) {
-                    isTokenValid = devJwtTokenProvider.validateToken(token);
-                }
 
-               if (isTokenValid){
+
+
                    if (jwtTokenProvider != null){
                        userId = jwtTokenProvider.getSupabaseUserId(token);
                        email = jwtTokenProvider.getEmailFromToken(token);
 
                        // Hent rolle fra DATABASE i stedet for JWT token
-                       role = determineUserRole(userId);
-                   } else if (devJwtTokenProvider != null) {
-                       userId = devJwtTokenProvider.getSupabaseUserId(token);
-                       email = devJwtTokenProvider.getEmailFromToken(token);
                        role = determineUserRole(userId);
                    }
 
@@ -106,7 +87,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                    }
                }
 
-            }
+
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }

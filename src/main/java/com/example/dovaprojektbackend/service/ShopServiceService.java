@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.repository.ShopServiceRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class ShopServiceService {
 
@@ -31,6 +35,18 @@ public class ShopServiceService {
         }
 
         return ydelserRepository.save(ydelser);
+    }
+
+    public List<ShopService> getShopsService(UUID shopId){
+        List<ShopService> shopServices = new ArrayList<>();
+        if (shopId != null){
+            for (ShopService service:ydelserRepository.findAll()) {
+                if (shopId.equals(service.getBikeshop().getId())){
+                    shopServices.add(service);
+                }
+            }
+        }
+        return shopServices;
     }
 
 }
