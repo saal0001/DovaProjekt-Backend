@@ -32,14 +32,14 @@ public class BikeShopController {
     }
 
     @PutMapping("/{shopId}")
-    @PreAuthorize("#shopId == authentication.principal.shopId and hasRole('shop')")
+    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('shop')")
     public ResponseEntity<Bikeshop> update(@RequestBody Bikeshop bikeshop, @PathVariable UUID shopId){
         Bikeshop updateBikeShop = bikeShopService.updateBikeshop(bikeshop, shopId);
         return ResponseEntity.ok(updateBikeShop);
     }
 
     @DeleteMapping("/delete-account/{shopId}")
-    @PreAuthorize("#shopId == authentication.principal.shopId and hasRole('shop')")
+    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('shop')")
     public ResponseEntity<Void> deleteAccount(@PathVariable UUID shopId){
         supabaseAuthService.deleteUser(shopId);
         bikeShopService.deleteBikeShop(shopId);

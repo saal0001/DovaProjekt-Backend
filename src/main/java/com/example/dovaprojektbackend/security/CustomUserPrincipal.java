@@ -18,6 +18,11 @@ public class CustomUserPrincipal {
         return userId;
     }
 
+    public UUID userId() {
+        return userId;
+    }
+
+
     public String getEmail() {
         return email;
     }
