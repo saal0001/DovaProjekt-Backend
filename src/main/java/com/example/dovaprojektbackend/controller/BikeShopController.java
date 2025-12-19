@@ -41,8 +41,8 @@ public class BikeShopController {
     @DeleteMapping("/delete-account/{shopId}")
     @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('shop')")
     public ResponseEntity<Void> deleteAccount(@PathVariable UUID shopId){
-        supabaseAuthService.deleteUser(shopId);
         bikeShopService.deleteBikeShop(shopId);
+        supabaseAuthService.deleteUser(shopId);
         return ResponseEntity.ok().build();
     }
     

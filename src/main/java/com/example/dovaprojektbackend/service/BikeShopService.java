@@ -37,6 +37,9 @@ public class BikeShopService {
        if (updateBikeShop.getShopName() != null){
            bikeshop.setShopName(updateBikeShop.getShopName());
        }
+       if(updateBikeShop.getImageUrl() != null){
+           bikeshop.setImageUrl(updateBikeShop.getImageUrl());
+       }
        if (updateBikeShop.getPhoneNumber() != null){
            bikeshop.setPhoneNumber(updateBikeShop.getPhoneNumber());
        }
@@ -56,7 +59,7 @@ public class BikeShopService {
 
    public void deleteBikeShop(UUID shopId){
        Bikeshop bikeshop = getBikeShopById(shopId);
-       bikeShopRepository.deleteById(bikeshop.getId());
+       bikeShopRepository.deleteById(bikeshop.getShopId());
    }
 
 }

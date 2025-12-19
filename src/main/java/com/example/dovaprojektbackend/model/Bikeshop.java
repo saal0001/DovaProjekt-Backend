@@ -1,5 +1,6 @@
 package com.example.dovaprojektbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -25,6 +26,9 @@ public class Bikeshop {
     @Column(name = "shop_name",nullable = false)
     private String shopName;
 
+    @Column(name = "image_url")
+    private String imageUrl; //
+
     @Column(name = "phone_number",nullable = false,unique = true )
     private Long phoneNumber;
 
@@ -48,8 +52,10 @@ public class Bikeshop {
 
     public Bikeshop() {}
 
-    public Bikeshop(String shopName, Long phoneNumber, String openingHours, Integer cvrNumber, String address, String email) {
+    public Bikeshop(UUID shopId, String shopName, String imageUrl, Long phoneNumber, String openingHours, Integer cvrNumber, String address, String email) {
+        this.shopId = shopId;
         this.shopName = shopName;
+        this.imageUrl = imageUrl;
         this.phoneNumber = phoneNumber;
         this.openingHours = openingHours;
         this.cvrNumber = cvrNumber;
@@ -57,11 +63,12 @@ public class Bikeshop {
         this.email = email;
     }
 
-    public UUID getId() {
+    @JsonProperty("shopId")
+    public UUID getShopId() {
         return shopId;
     }
 
-    public void setId(UUID id) {
+    public void setShopId(UUID id) {
         this.shopId = id;
     }
 
@@ -71,6 +78,14 @@ public class Bikeshop {
 
     public void setShopName(String shopName) {
         this.shopName = shopName;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getPhoneNumber() {
