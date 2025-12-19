@@ -26,6 +26,10 @@ public class BikeShopController {
         this.supabaseAuthService = supabaseAuthService;
     }
 
+    @PostMapping("/create")
+    public Bikeshop createShop(@RequestBody Bikeshop bikeshop){
+        return bikeShopService.createShop(bikeshop);
+    }
 
     @PutMapping("/{shopId}")
     @PreAuthorize("#shopId == authentication.principal.shopId and hasRole('shop')")

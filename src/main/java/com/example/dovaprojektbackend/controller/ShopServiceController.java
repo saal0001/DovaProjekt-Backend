@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import com.example.dovaprojektbackend.model.ShopService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/ydelser")
-@PreAuthorize("hasAuthority('SHOP')")
+//@PreAuthorize("hasAuthority('SHOP')")
 public class ShopServiceController {
 
 
@@ -27,8 +28,8 @@ public class ShopServiceController {
     }
 
     @GetMapping("/shopServices")
-    public List<ShopService> getShopServices(Bikeshop bikeshop){
-        return shopServiceService.getShopsService(bikeshop);
+    public List<ShopService> getShopServices(@RequestParam UUID shopId){
+        return shopServiceService.getShopsService(shopId);
     }
     
 

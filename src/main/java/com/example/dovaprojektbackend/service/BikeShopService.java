@@ -18,6 +18,10 @@ public class BikeShopService {
        this.bikeShopRepository = bikeShopRepository;
    }
 
+   public Bikeshop createShop(Bikeshop bikeshop){
+       return bikeShopRepository.save(bikeshop);
+   }
+
    public Bikeshop getBikeShopById(UUID id){
        return bikeShopRepository.findById(id)
                .orElseThrow(() -> new RuntimeException("Bikeshop not found with id: " + id));

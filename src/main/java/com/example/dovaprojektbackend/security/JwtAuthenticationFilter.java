@@ -3,7 +3,6 @@ package com.example.dovaprojektbackend.security;
 import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import com.example.dovaprojektbackend.repository.UserRepository;
-import com.example.dovaprojektbackend.service.DevJwtTokenProvider;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
