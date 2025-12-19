@@ -2,7 +2,6 @@ package com.example.dovaprojektbackend.service;
 
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.dovaprojektbackend.model.ShopService;
@@ -41,7 +40,7 @@ public class ShopServiceService {
         List<ShopService> shopServices = new ArrayList<>();
         if (shopId != null){
             for (ShopService service:ydelserRepository.findAll()) {
-                if (shopId.equals(service.getBikeshop().getId())){
+                if (shopId.equals(service.getBikeshop().getShopId())){
                     shopServices.add(service);
                 }
             }
