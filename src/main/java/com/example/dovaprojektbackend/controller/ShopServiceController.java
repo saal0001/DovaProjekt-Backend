@@ -31,6 +31,16 @@ public class ShopServiceController {
     public List<ShopService> getShopServices(@RequestParam UUID shopId){
         return shopServiceService.getShopsService(shopId);
     }
+
+    @DeleteMapping("/delete")
+    public void deleteService(@RequestParam UUID serviceId){
+        shopServiceService.deleteService(serviceId);
+    }
+
+    @PutMapping("/update")
+    public ShopService updateService(@RequestBody ShopService shopService){
+        return shopServiceService.updateService(shopService);
+    }
     
 
 }
