@@ -4,5 +4,6 @@ public enum BookingStatus {
     NYORDRE,
     PÅVÆRKSTED,
     KLAR,
-    AFSLUTTET
+    AFSLUTTET,
+    ANNULLERET
 }

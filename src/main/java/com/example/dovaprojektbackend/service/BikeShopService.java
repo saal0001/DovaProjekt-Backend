@@ -1,10 +1,13 @@
 package com.example.dovaprojektbackend.service;
 
 
+import com.example.dovaprojektbackend.dto.CreateBikeshopRequest;
+import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,7 +21,16 @@ public class BikeShopService {
        this.bikeShopRepository = bikeShopRepository;
    }
 
-   public Bikeshop createShop(Bikeshop bikeshop){
+   public Bikeshop createShop(CreateBikeshopRequest request){
+       Bikeshop bikeshop = new Bikeshop();
+       bikeshop.setShopName(request.getShopName());
+       bikeshop.setImageUrl(request.getImageUrl());
+       bikeshop.setPhoneNumber(request.getPhoneNumber());
+       bikeshop.setOpeningHours(request.getOpeningHours());
+       bikeshop.setCvrNumber(request.getCvrNumber());
+       bikeshop.setAddress(request.getAddress());
+       bikeshop.setEmail(request.getEmail());
+
        return bikeShopRepository.save(bikeshop);
    }
 
@@ -31,26 +43,29 @@ public class BikeShopService {
        return bikeShopRepository.findAll();
    }
 
-   public Bikeshop updateBikeshop(Bikeshop updateBikeShop, UUID shopId ){
+   public Bikeshop updateBikeshop(UpdateBikeshopRequest request, UUID shopId ){
        Bikeshop bikeshop = getBikeShopById(shopId);
 
-       if (updateBikeShop.getShopName() != null){
-           bikeshop.setShopName(updateBikeShop.getShopName());
+       if (request.getShopName() != null){
+           bikeshop.setShopName(request.getShopName());
        }
-       if(updateBikeShop.getImageUrl() != null){
-           bikeshop.setImageUrl(updateBikeShop.getImageUrl());
+       if(request.getImageUrl() != null){
+           bikeshop.setImageUrl(request.getImageUrl());
        }
-       if (updateBikeShop.getPhoneNumber() != null){
-           bikeshop.setPhoneNumber(updateBikeShop.getPhoneNumber());
+       if (request.getPhoneNumber() != null){
+           bikeshop.setPhoneNumber(request.getPhoneNumber());
        }
-       if(updateBikeShop.getOpeningHours() != null){
-           bikeshop.setOpeningHours(updateBikeShop.getOpeningHours());
+       if(request.getOpeningHours() != null){
+           bikeshop.setOpeningHours(request.getOpeningHours());
        }
-       if (updateBikeShop.getAddress() != null){
-           bikeshop.setAddress(updateBikeShop.getAddress());
+       if(request.getCvrNumber() != null){
+           bikeshop.setCvrNumber(request.getCvrNumber());
        }
-       if (updateBikeShop.getEmail() != null){
-           bikeshop.setEmail(updateBikeShop.getEmail());
+       if (request.getAddress() != null){
+           bikeshop.setAddress(request.getAddress());
+       }
+       if (request.getEmail() != null){
+           bikeshop.setEmail(request.getEmail());
        }
 
        return bikeShopRepository.save(bikeshop);

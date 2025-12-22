@@ -25,6 +25,10 @@ public class Booking {
     @JoinColumn(name = "users_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "shop_service_id", nullable = false)
+    private ShopService shopService;
+
     @Enumerated(EnumType.STRING)
     @Column(length = 50)
     private BookingStatus status;
@@ -36,8 +40,9 @@ public class Booking {
 
     }
 
-    public Booking(User user, BookingStatus status, LocalDateTime createdAt) {
+    public Booking(User user, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
         this.user = user;
+        this.shopService = shopService;
         this.status = status;
         this.createdAt = createdAt;
     }
@@ -56,6 +61,14 @@ public class Booking {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public ShopService getShopService() {
+        return shopService;
+    }
+
+    public void setShopService(ShopService shopService) {
+        this.shopService = shopService;
     }
 
     public BookingStatus getStatus() {
