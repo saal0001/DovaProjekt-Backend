@@ -1,5 +1,80 @@
 package com.example.dovaprojektbackend.service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
+import com.example.dovaprojektbackend.model.Booking;
+import com.example.dovaprojektbackend.model.ShopService;
+import com.example.dovaprojektbackend.model.User;
+import com.example.dovaprojektbackend.model.enums.BookingStatus;
+import com.example.dovaprojektbackend.model.enums.Role;
+import com.example.dovaprojektbackend.repository.BookingsRepository;
+import com.example.dovaprojektbackend.repository.ShopServiceRepository;
+import com.example.dovaprojektbackend.repository.UserRepository;
+
+@Service
 public class BookingsService {
-    
+
+    private final BookingsRepository bookingsRepository;
+    private final UserRepository userRepository;
+    private final ShopServiceRepository shopServiceRepository;
+
+    public BookingsService(BookingsRepository bookingsRepository,
+                          UserRepository userRepository,
+                          ShopServiceRepository shopServiceRepository) {
+        this.bookingsRepository = bookingsRepository;
+        this.userRepository = userRepository;
+        this.shopServiceRepository = shopServiceRepository;
+    }
+
+    public Booking createBooking(UUID userId, UUID shopServiceId) {
+        // Verify user exists and is a customer
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("Bruger ikke fundet"));
+
+        if (user.getRole() != Role.customer) {
+            throw new RuntimeException("Kun kunder kan oprette bookinger");
+        }
+
+        // Verify shop service exists
+        ShopService shopService = shopServiceRepository.findById(shopServiceId)
+            .orElseThrow(() -> new RuntimeException("Service ikke fundet"));
+
+        // Create new booking with status NYORDRE
+        Booking booking = new Booking(
+            user,
+            shopService,
+            BookingStatus.NYORDRE,
+            LocalDateTime.now()
+        );
+
+        return bookingsRepository.save(booking);
+    }
+
+    public Booking cancelBooking(UUID bookingId, UUID userId) {
+        // Verify booking exists
+        Booking booking = bookingsRepository.findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking ikke fundet"));
+
+        // Verify booking belongs to user
+        if (!booking.getUser().getUserId().equals(userId)) {
+            throw new RuntimeException("Du kan kun annullere dine egne bookinger");
+        }
+
+        // Verify booking can be cancelled
+        if (booking.getStatus() == BookingStatus.AFSLUTTET) {
+            throw new RuntimeException("Kan ikke annullere en afsluttet booking");
+        }
+
+        if (booking.getStatus() == BookingStatus.ANNULLERET) {
+            throw new RuntimeException("Booking er allerede annulleret");
+        }
+
+        // Update status to ANNULLERET
+        booking.setStatus(BookingStatus.ANNULLERET);
+
+        return bookingsRepository.save(booking);
+    }
 }
