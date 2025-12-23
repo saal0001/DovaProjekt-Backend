@@ -1,8 +1,11 @@
 package com.example.dovaprojektbackend.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import com.example.dovaprojektbackend.model.Bikeshop;
 import org.springframework.stereotype.Service;
 
 import com.example.dovaprojektbackend.model.Booking;
@@ -42,9 +45,11 @@ public class BookingsService {
         ShopService shopService = shopServiceRepository.findById(shopServiceId)
             .orElseThrow(() -> new RuntimeException("Service ikke fundet"));
 
-        // Create new booking with status NYORDRE
+        Bikeshop bikeshop = shopService.getBikeshop();
+
+                // Create new booking with status NYORDRE
         Booking booking = new Booking(
-            user,
+            user,bikeshop,
             shopService,
             BookingStatus.NYORDRE,
             LocalDateTime.now()
@@ -76,5 +81,18 @@ public class BookingsService {
         booking.setStatus(BookingStatus.ANNULLERET);
 
         return bookingsRepository.save(booking);
+    }
+
+    public List<Booking> getBookings(UUID shopId){
+        List<Booking> bookings = new ArrayList<>();
+        if (shopId != null){
+            for (Booking booking: bookingsRepository.findAll()) {
+                if (booking.getBikeshop().getShopId().equals(shopId)){
+                    bookings.add(booking);
+                }
+            }
+        }
+      return bookings;
+
     }
 }
