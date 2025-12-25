@@ -26,7 +26,7 @@ public class Booking {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "shps_id", nullable = false)
+    @JoinColumn(name = "shop_id", nullable = false)
     private Bikeshop bikeshop;
 
     @ManyToOne
