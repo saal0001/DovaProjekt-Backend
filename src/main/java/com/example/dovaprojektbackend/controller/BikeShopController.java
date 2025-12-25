@@ -3,6 +3,7 @@ package com.example.dovaprojektbackend.controller;
 import com.example.dovaprojektbackend.dto.CreateBikeshopRequest;
 import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
 import com.example.dovaprojektbackend.model.Bikeshop;
+import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.dovaprojektbackend.service.BikeShopService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -48,5 +50,5 @@ public class BikeShopController {
         supabaseAuthService.deleteUser(shopId);
         return ResponseEntity.ok().build();
     }
-    
+
 }
