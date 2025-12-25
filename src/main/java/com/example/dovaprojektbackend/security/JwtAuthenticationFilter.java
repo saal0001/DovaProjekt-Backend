@@ -47,6 +47,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
+        System.out.println("auth: " + request.getMethod() +  " " + request.getRequestURI());
+
         // 1️⃣ Ingen Authorization-header → Fortsæt uden authentication
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);

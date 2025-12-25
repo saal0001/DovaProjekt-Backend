@@ -39,6 +39,7 @@ public class UserBookingsController {
     }
 
     @GetMapping("/bookings")
+    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('SHOP')")
     public List<Booking> getShopServices(@RequestParam UUID shopId) {
         return bookingsService.getBookings(shopId);
     }

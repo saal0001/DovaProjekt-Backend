@@ -47,11 +47,11 @@ public class BookingsService {
 
         Bikeshop bikeshop = shopService.getBikeshop();
 
-                // Create new booking with status NYORDRE
+                // Create new booking with status NY_BOOKING
         Booking booking = new Booking(
             user,bikeshop,
             shopService,
-            BookingStatus.NYORDRE,
+            BookingStatus.NY_BOOKING,
             LocalDateTime.now()
         );
 
@@ -69,8 +69,8 @@ public class BookingsService {
         }
 
         // Verify booking can be cancelled
-        if (booking.getStatus() == BookingStatus.AFSLUTTET) {
-            throw new RuntimeException("Kan ikke annullere en afsluttet booking");
+        if (booking.getStatus() == BookingStatus.AFHENTET) {
+            throw new RuntimeException("Kan ikke annullere en afhentet booking");
         }
 
         if (booking.getStatus() == BookingStatus.ANNULLERET) {

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
 
@@ -23,6 +25,7 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "users_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne
@@ -98,6 +101,11 @@ public class Booking {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @JsonProperty("userId")
+    public UUID getUserId() {
+        return user != null ? user.getUserId() : null;
     }
 
 }
