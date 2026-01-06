@@ -35,7 +35,7 @@ public class SecurityConfig {
                 // Konfigurer endpoint beskyttelse
                 .authorizeHttpRequests(auth -> auth
                         // Public endpoints (ingen authentication krævet)
-                        .requestMatchers("/api/public/**", "/api/health/**","/h2-console/**","/shops/**","/ydelser/**").permitAll()
+                        .requestMatchers("/api/public/**", "/api/health/**","/h2-console/**","/shops/**","/ydelser/**","/api/**").permitAll()
 
                         // Alle andre endpoints kræver authentication
                         .anyRequest().authenticated()

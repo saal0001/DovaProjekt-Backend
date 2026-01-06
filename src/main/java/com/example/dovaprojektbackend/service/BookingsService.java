@@ -1,10 +1,13 @@
 package com.example.dovaprojektbackend.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.repository.CustomerRepository;
+import com.example.dovaprojektbackend.model.Bikeshop;
 import org.springframework.stereotype.Service;
 
 import com.example.dovaprojektbackend.model.Booking;
@@ -40,11 +43,14 @@ public class BookingsService {
         ShopService shopService = shopServiceRepository.findById(shopServiceId)
             .orElseThrow(() -> new RuntimeException("Service ikke fundet"));
 
-        // Create new booking with status NYORDRE
+        Bikeshop bikeshop = shopService.getBikeshop();
+
+                // Create new booking with status NY_BOOKING
         Booking booking = new Booking(
             customer,
+            bikeshop,
             shopService,
-            BookingStatus.NYORDRE,
+            BookingStatus.NY_BOOKING,
             LocalDateTime.now()
         );
 
@@ -62,8 +68,8 @@ public class BookingsService {
         }
 
         // Verify booking can be cancelled
-        if (booking.getStatus() == BookingStatus.AFSLUTTET) {
-            throw new RuntimeException("Kan ikke annullere en afsluttet booking");
+        if (booking.getStatus() == BookingStatus.AFHENTET) {
+            throw new RuntimeException("Kan ikke annullere en afhentet booking");
         }
 
         if (booking.getStatus() == BookingStatus.ANNULLERET) {
@@ -74,5 +80,18 @@ public class BookingsService {
         booking.setStatus(BookingStatus.ANNULLERET);
 
         return bookingsRepository.save(booking);
+    }
+
+    public List<Booking> getBookings(UUID shopId){
+        List<Booking> bookings = new ArrayList<>();
+        if (shopId != null){
+            for (Booking booking: bookingsRepository.findAll()) {
+                if (booking.getBikeshop().getShopId().equals(shopId)){
+                    bookings.add(booking);
+                }
+            }
+        }
+      return bookings;
+
     }
 }

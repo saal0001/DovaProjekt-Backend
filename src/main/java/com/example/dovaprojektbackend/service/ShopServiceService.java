@@ -48,4 +48,27 @@ public class ShopServiceService {
         return shopServices;
     }
 
+    public void deleteService(UUID serviceId){
+            if (ydelserRepository.existsById(serviceId)){
+                ydelserRepository.deleteById(serviceId);
+        }else {
+                throw new RuntimeException("service not found with id:" + serviceId);
+            }
+    }
+
+    public ShopService updateService(ShopService service){
+        ShopService oldService = new ShopService();
+        if (ydelserRepository.existsById(service.getShopServiceId())){
+            oldService = ydelserRepository.findById(service.getShopServiceId()).get();
+            oldService.setName(service.getName());
+            oldService.setPrice(service.getPrice());
+            oldService.setDuration(service.getDuration());
+            oldService.setDescription(service.getDescription());
+            ydelserRepository.save(oldService);
+        } else {
+            throw new RuntimeException("service existere ikke");
+        }
+        return oldService;
+    }
+
 }
