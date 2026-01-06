@@ -22,8 +22,8 @@ public class Booking {
     }
 
     @ManyToOne
-    @JoinColumn(name = "users_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "shop_service_id", nullable = false)
@@ -40,8 +40,8 @@ public class Booking {
 
     }
 
-    public Booking(User user, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
-        this.user = user;
+    public Booking(Customer customer, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
+        this.customer = customer;
         this.shopService = shopService;
         this.status = status;
         this.createdAt = createdAt;
@@ -55,12 +55,12 @@ public class Booking {
         this.bookingId = bookingId;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getUser() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(Customer customer) {
+        this.customer = customer;
     }
 
     public ShopService getShopService() {

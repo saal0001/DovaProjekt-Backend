@@ -1,10 +1,10 @@
 package com.example.dovaprojektbackend.security;
 
 import com.example.dovaprojektbackend.model.Bikeshop;
-import com.example.dovaprojektbackend.model.User;
+import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
-import com.example.dovaprojektbackend.repository.UserRepository;
+import com.example.dovaprojektbackend.repository.CustomerRepository;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,15 +26,12 @@ import java.util.UUID;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
+    private final CustomerRepository  customerRepository;
     private final BikeshopRepository bikeshopRepository;
 
-    public JwtAuthenticationFilter(
-            JwtTokenProvider jwtTokenProvider,
-            UserRepository userRepository,
-            BikeshopRepository bikeshopRepository) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,CustomerRepository  customerRepository, BikeshopRepository bikeshopRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepository = userRepository;
+        this.customerRepository = customerRepository;
         this.bikeshopRepository = bikeshopRepository;
     }
 
@@ -120,9 +117,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private Role getUserRoleFromDatabase(UUID userId) {
         // Tjek først i users tabel (customers og admins)
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            return user.get().getRole();
+        Optional<Customer> customer = customerRepository.findById(userId);
+        if (customer.isPresent()) {
+            return customer.get().getRole();
         }
 
         // Tjek derefter i bikeshop tabel

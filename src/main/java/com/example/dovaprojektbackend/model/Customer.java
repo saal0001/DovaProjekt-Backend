@@ -8,15 +8,15 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class Customer {
     @Id
-    @Column(name = "user_id")
-    private UUID userId;
+    @Column(name = "customer_id")
+    private UUID customerId;
 
     @PrePersist
     public void prePersist() {
-        if (userId == null) {
-            userId = UUID.randomUUID();
+        if (customerId == null) {
+            customerId = UUID.randomUUID();
         }
     }
 
@@ -39,9 +39,9 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    public User(){}
+    public Customer(){}
 
-    public User(String name, String email, Long phone, String address, Role role) {
+    public Customer(String name, String email, Long phone, String address, Role role) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -49,12 +49,12 @@ public class User {
         this.role = role;
     }
 
-    public UUID getUserId() {
-        return userId;
+    public UUID getCustomerId() {
+        return customerId;
     }
 
-    public void setUserId(UUID id) {
-        this.userId = id;
+    public void setCustomerId(UUID id) {
+        this.customerId = id;
     }
 
     public String getName() {

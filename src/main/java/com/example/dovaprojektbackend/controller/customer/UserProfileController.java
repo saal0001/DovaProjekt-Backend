@@ -1,10 +1,10 @@
-package com.example.dovaprojektbackend.controller.user;
+package com.example.dovaprojektbackend.controller.customer;
 
 import com.example.dovaprojektbackend.model.Bikeshop;
-import com.example.dovaprojektbackend.model.User;
+import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.service.BikeShopService;
+import com.example.dovaprojektbackend.service.CustomerService;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
-import com.example.dovaprojektbackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,12 +17,12 @@ import java.util.UUID;
 @RequestMapping("/api/users")
 public class UserProfileController {
 
-    private final UserService userService;
+    private final CustomerService customerService;
     private final SupabaseAuthService supabaseAuthService;
     private final BikeShopService bikeShopService;
 
-    public UserProfileController(UserService userService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopServic) {
-        this.userService = userService;
+    public UserProfileController(CustomerService customerService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopServic) {
+        this.customerService = customerService;
         this.supabaseAuthService = supabaseAuthService;
         this.bikeShopService = bikeShopServic;
     }
@@ -36,23 +36,23 @@ public class UserProfileController {
 
     @GetMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<User> getUserById(@PathVariable UUID userId) {
-        User user = userService.getUserById(userId);
-        return ResponseEntity.ok(user);
+    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID customerId) {
+        Customer customer = customerService.getCustomerById(customerId);
+        return ResponseEntity.ok(customer);
     }
 
     @PutMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<User> updateUser(@PathVariable UUID userId, @RequestBody User user) {
-        User userUpdated = userService.updateUser(userId, user);
-        return ResponseEntity.ok(userUpdated);
+    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID userId, @RequestBody Customer customer) {
+        Customer customerUpdated = customerService.updateCustomer(userId, customer);
+        return ResponseEntity.ok(customerUpdated);
     }
 
     @DeleteMapping("/delete-account/{userId}")
     @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID userId) {
-        userService.deleteUser(userId);
-        supabaseAuthService.deleteUser(userId);
+    public ResponseEntity<Void> deleteAccount(@PathVariable UUID customerId) {
+        customerService.deleteCustomer(customerId);
+        supabaseAuthService.deleteUser(customerId);
         return ResponseEntity.ok().build();
     }
 }

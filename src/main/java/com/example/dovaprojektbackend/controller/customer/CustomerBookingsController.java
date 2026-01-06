@@ -1,4 +1,4 @@
-package com.example.dovaprojektbackend.controller.user;
+package com.example.dovaprojektbackend.controller.customer;
 
 
 import org.springframework.http.HttpStatus;
@@ -19,11 +19,11 @@ import com.example.dovaprojektbackend.service.BookingsService;
 
 @RestController
 @RequestMapping("/api/bookings")
-public class UserBookingsController {
+public class CustomerBookingsController {
 
     private final BookingsService bookingsService;
 
-    public UserBookingsController(BookingsService bookingsService) {
+    public CustomerBookingsController(BookingsService bookingsService) {
         this.bookingsService = bookingsService;
     }
 
