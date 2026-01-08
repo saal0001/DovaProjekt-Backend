@@ -2,6 +2,7 @@ package com.example.dovaprojektbackend.controller;
 
 import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import com.example.dovaprojektbackend.service.ShopServiceService;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,12 @@ public class ShopServiceController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('SHOP')")
-    public ShopService createShopService(@RequestBody ShopService shopService) {
+    public ShopService createShopService(@Valid @RequestBody ShopService shopService) {
         return shopServiceService.createShopService(shopService);
     }
 
+    // Hent services for en shop (public endpoint - ingen login krævet)
     @GetMapping("/shopServices")
-    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasAnyRole('CUSTOMER', 'SHOP')")
     public List<ShopService> getShopServices(@RequestParam UUID shopId) {
         return shopServiceService.getShopServices(shopId);
     }
@@ -43,7 +44,7 @@ public class ShopServiceController {
 
     @PutMapping("/update")
     @PreAuthorize("hasRole('SHOP')")
-    public ShopService updateService(@RequestBody ShopService shopService, Authentication authentication){
+    public ShopService updateService(@Valid @RequestBody ShopService shopService, Authentication authentication){
         CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
         UUID shopId = userPrincipal.getUserId();
         return shopServiceService.updateService(shopService, shopId);

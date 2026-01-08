@@ -1,8 +1,10 @@
 package com.example.dovaprojektbackend.model;
 
-import com.example.dovaprojektbackend.model.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,21 +24,22 @@ public class Customer {
         }
     }
 
+    @NotBlank(message = "Navn er påkrævet")
     @Column(nullable = false)
     private String name;
 
+    @NotBlank(message = "Email er påkrævet")
+    @Email(message = "Email skal være gyldig")
     @Column(unique = true,  nullable = false)
     private String email;
 
+    @NotBlank(message = "Telefonnummer er påkrævet")
     @Column(unique = true, nullable = false)
-    private Long phone;
+    private String phone;
 
+    @NotBlank(message = "Adresse er påkrævet")
     @Column(nullable = false)
     private String address;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
 
     @OneToMany(mappedBy = "customer")
     @JsonIgnoreProperties("customer")
@@ -68,11 +71,11 @@ public class Customer {
         this.email = email;
     }
 
-    public Long getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Long phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
@@ -82,14 +85,6 @@ public class Customer {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public List<Booking> getBookings() {

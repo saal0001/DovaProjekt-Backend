@@ -119,7 +119,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Tjek først i users tabel (customers)
         Optional<Customer> customer = customerRepository.findById(userId);
         if (customer.isPresent()) {
-            return customer.get().getRole();
+            return Role.customer;
         }
 
         // Tjek derefter i bikeshop tabel

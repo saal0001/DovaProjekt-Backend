@@ -31,7 +31,7 @@ public class Bikeshop {
     private String imageUrl; //
 
     @Column(name = "phone_number",nullable = false,unique = true )
-    private Long phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "opening_hours", nullable = false)
     private String openingHours;
@@ -83,11 +83,11 @@ public class Bikeshop {
         this.imageUrl = imageUrl;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

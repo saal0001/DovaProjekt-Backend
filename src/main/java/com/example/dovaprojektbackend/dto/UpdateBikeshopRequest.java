@@ -1,20 +1,41 @@
 package com.example.dovaprojektbackend.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 public class UpdateBikeshopRequest {
 
+    @NotBlank(message = "Shop navn er påkrævet")
     private String shopName;
-    private String imageUrl;
-    private Long phoneNumber;
+
+    private String imageUrl; // Optional felt
+
+    @NotBlank(message = "Telefonnummer er påkrævet")
+    private String phoneNumber;
+
+    @NotBlank(message = "Åbningstider er påkrævet")
     private String openingHours;
+
+    @NotBlank(message = "CVR nummer er påkrævet")
+    @Pattern(regexp = "^\\d{8}$", message = "CVR skal være præcis 8 cifre")
     private String cvrNumber;
+
+    @NotBlank(message = "Adresse er påkrævet")
     private String address;
+
+    @NotBlank(message = "By er påkrævet")
     private String city;
+
+    @NotBlank(message = "Email er påkrævet")
+    @Email(message = "Email skal være gyldig")
     private String email;
 
     public UpdateBikeshopRequest() {
     }
 
-    public UpdateBikeshopRequest(String shopName, String imageUrl, Long phoneNumber, String openingHours,
+    public UpdateBikeshopRequest(String shopName, String imageUrl, String phoneNumber, String openingHours,
                                 String cvrNumber, String address, String city, String email) {
         this.shopName = shopName;
         this.imageUrl = imageUrl;
@@ -42,11 +63,11 @@ public class UpdateBikeshopRequest {
         this.imageUrl = imageUrl;
     }
 
-    public Long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(Long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

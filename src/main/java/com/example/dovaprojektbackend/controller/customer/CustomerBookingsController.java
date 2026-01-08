@@ -1,5 +1,6 @@
 package com.example.dovaprojektbackend.controller.customer;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +25,7 @@ public class CustomerBookingsController {
 
     @PostMapping
     @PreAuthorize("#request.userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Booking> createBooking(@RequestBody CreateBookingRequest request) {
+    public ResponseEntity<Booking> createBooking(@Valid @RequestBody CreateBookingRequest request) {
         Booking booking = bookingsService.createBooking(request.getUserId(), request.getShopServiceId());
         return ResponseEntity.status(HttpStatus.CREATED).body(booking);
     }

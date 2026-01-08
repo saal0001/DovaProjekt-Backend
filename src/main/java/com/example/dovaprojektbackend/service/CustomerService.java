@@ -2,7 +2,9 @@ package com.example.dovaprojektbackend.service;
 
 import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.repository.CustomerRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -20,6 +22,7 @@ public class CustomerService {
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
     }
 
+    @Transactional
     public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
         Customer customer = getCustomerById(customerId);
 
@@ -33,8 +36,14 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
+    @Transactional
     public void deleteCustomer(UUID customerId) {
         Customer customer = getCustomerById(customerId);
+
+        if (customer == null) {
+            throw new EntityNotFoundException("Customer med id " + customerId + " findes ikke");
+        }
+
         customerRepository.delete(customer);
     }
 }

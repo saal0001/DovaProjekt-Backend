@@ -5,6 +5,7 @@ import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,19 +20,6 @@ public class BikeShopService {
        this.bikeShopRepository = bikeShopRepository;
    }
 
-   public Bikeshop createShop(CreateBikeshopRequest request){
-       Bikeshop bikeshop = new Bikeshop();
-       bikeshop.setShopName(request.getShopName());
-       bikeshop.setImageUrl(request.getImageUrl());
-       bikeshop.setPhoneNumber(request.getPhoneNumber());
-       bikeshop.setOpeningHours(request.getOpeningHours());
-       bikeshop.setCvrNumber(request.getCvrNumber());
-       bikeshop.setAddress(request.getAddress());
-       bikeshop.setCity(request.getCity());
-       bikeshop.setEmail(request.getEmail());
-
-       return bikeShopRepository.save(bikeshop);
-   }
 
    public Bikeshop getBikeShopById(UUID id){
        return bikeShopRepository.findById(id)
@@ -42,6 +30,7 @@ public class BikeShopService {
        return bikeShopRepository.findAll();
    }
 
+   @Transactional
    public Bikeshop updateBikeshop(UpdateBikeshopRequest request, UUID shopId ){
        Bikeshop bikeshop = getBikeShopById(shopId);
 
@@ -61,6 +50,7 @@ public class BikeShopService {
    }
 
 
+   @Transactional
    public void deleteBikeShop(UUID shopId) {
        Bikeshop bikeshop = getBikeShopById(shopId);
        bikeShopRepository.delete(bikeshop);

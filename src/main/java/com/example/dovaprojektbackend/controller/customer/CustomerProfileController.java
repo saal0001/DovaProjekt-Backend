@@ -5,6 +5,7 @@ import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.service.BikeShopService;
 import com.example.dovaprojektbackend.service.CustomerService;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,9 +28,8 @@ public class CustomerProfileController {
         this.bikeShopService = bikeShopServic;
     }
 
-    // Hent alle shops for kunder
+    // Hent alle shops for kunder (public endpoint - ingen login krævet)
     @GetMapping("/bikeshops")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'SHOP')")
     public ResponseEntity<List<Bikeshop>> findAllBikeshops(){
         return ResponseEntity.ok(bikeShopService.findAll());
     }
@@ -43,7 +43,7 @@ public class CustomerProfileController {
 
     @PutMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID userId, @RequestBody Customer customer) {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID userId, @Valid @RequestBody Customer customer) {
         Customer customerUpdated = customerService.updateCustomer(userId, customer);
         return ResponseEntity.ok(customerUpdated);
     }

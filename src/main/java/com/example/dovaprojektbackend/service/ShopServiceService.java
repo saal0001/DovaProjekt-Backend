@@ -3,6 +3,7 @@ package com.example.dovaprojektbackend.service;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.repository.ShopServiceRepository;
@@ -24,6 +25,7 @@ public class ShopServiceService {
 
 
 
+    @Transactional
     public ShopService createShopService(ShopService shopService) {
         if (shopService.getShopId() != null) {
             Bikeshop bikeshop = bikeshopRepository.findById(shopService.getShopId())
@@ -41,6 +43,7 @@ public class ShopServiceService {
         return shopServiceRepository.findByBikeshop_ShopId(shopId);
     }
 
+    @Transactional
     public void deleteService(UUID serviceId, UUID shopId) {
         ShopService service = shopServiceRepository.findById(serviceId)
                 .orElseThrow(() -> new RuntimeException("Service not found with id: " + serviceId));
@@ -52,6 +55,7 @@ public class ShopServiceService {
         shopServiceRepository.delete(service);
     }
 
+    @Transactional
     public ShopService updateService(ShopService service, UUID shopId) {
         ShopService existingService = shopServiceRepository.findById(service.getShopServiceId())
                 .orElseThrow(() -> new RuntimeException("Service not found with id: " + service.getShopServiceId()));
