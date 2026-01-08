@@ -1,13 +1,15 @@
 package com.example.dovaprojektbackend.model;
 
 import com.example.dovaprojektbackend.model.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users")
+@Table(name = "customers")
 public class Customer {
     @Id
     @Column(name = "customer_id")
@@ -36,18 +38,11 @@ public class Customer {
     @Column(nullable = false)
     private Role role;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+    @OneToMany(mappedBy = "customer")
+    @JsonIgnoreProperties("customer")
+    private List<Booking> bookings = new ArrayList<>();
 
     public Customer(){}
-
-    public Customer(String name, String email, Long phone, String address, Role role) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
-        this.role = role;
-    }
 
     public UUID getCustomerId() {
         return customerId;
@@ -95,5 +90,13 @@ public class Customer {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

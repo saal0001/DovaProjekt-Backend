@@ -14,14 +14,14 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserProfileController {
+@RequestMapping("/api/customers")
+public class CustomerProfileController {
 
     private final CustomerService customerService;
     private final SupabaseAuthService supabaseAuthService;
     private final BikeShopService bikeShopService;
 
-    public UserProfileController(CustomerService customerService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopServic) {
+    public CustomerProfileController(CustomerService customerService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopServic) {
         this.customerService = customerService;
         this.supabaseAuthService = supabaseAuthService;
         this.bikeShopService = bikeShopServic;
@@ -36,8 +36,8 @@ public class UserProfileController {
 
     @GetMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID customerId) {
-        Customer customer = customerService.getCustomerById(customerId);
+    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID userId) {
+        Customer customer = customerService.getCustomerById(userId);
         return ResponseEntity.ok(customer);
     }
 
@@ -50,9 +50,9 @@ public class UserProfileController {
 
     @DeleteMapping("/delete-account/{userId}")
     @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID customerId) {
-        customerService.deleteCustomer(customerId);
-        supabaseAuthService.deleteUser(customerId);
+    public ResponseEntity<Void> deleteAccount(@PathVariable UUID userId) {
+        customerService.deleteCustomer(userId);
+        supabaseAuthService.deleteUser(userId);
         return ResponseEntity.ok().build();
     }
 }

@@ -10,7 +10,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -117,7 +116,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return Brugerens rolle eller null hvis ikke fundet
      */
     private Role getUserRoleFromDatabase(UUID userId) {
-        // Tjek først i users tabel (customers og admins)
+        // Tjek først i users tabel (customers)
         Optional<Customer> customer = customerRepository.findById(userId);
         if (customer.isPresent()) {
             return customer.get().getRole();

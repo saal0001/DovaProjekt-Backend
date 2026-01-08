@@ -30,10 +30,10 @@ public class BookingsService {
         this.shopServiceRepository = shopServiceRepository;
     }
 
-    public Booking createBooking(UUID userId, UUID shopServiceId) {
-        // Verify user exists and is a customer
-        Customer customer = customerRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Bruger ikke fundet"));
+    public Booking createBooking(UUID customerId, UUID shopServiceId) {
+        // Verify customer exists and has customer role
+        Customer customer = customerRepository.findById(customerId)
+            .orElseThrow(() -> new RuntimeException("Customer ikke fundet"));
 
         if (customer.getRole() != Role.customer) {
             throw new RuntimeException("Kun kunder kan oprette bookinger");
@@ -45,7 +45,7 @@ public class BookingsService {
 
         Bikeshop bikeshop = shopService.getBikeshop();
 
-                // Create new booking with status NY_BOOKING
+        // Create new booking with status NY_BOOKING
         Booking booking = new Booking(
             customer,
             bikeshop,
@@ -57,13 +57,13 @@ public class BookingsService {
         return bookingsRepository.save(booking);
     }
 
-    public Booking cancelBooking(UUID bookingId, UUID userId) {
+    public Booking cancelBooking(UUID bookingId, UUID customerId) {
         // Verify booking exists
         Booking booking = bookingsRepository.findById(bookingId)
             .orElseThrow(() -> new RuntimeException("Booking ikke fundet"));
 
-        // Verify booking belongs to user
-        if (!booking.getUser().getCustomerId().equals(userId)) {
+        // Verify booking belongs to customer
+        if (!booking.getCustomer().getCustomerId().equals(customerId)) {
             throw new RuntimeException("Du kan kun annullere dine egne bookinger");
         }
 
@@ -83,15 +83,9 @@ public class BookingsService {
     }
 
     public List<Booking> getBookings(UUID shopId){
-        List<Booking> bookings = new ArrayList<>();
-        if (shopId != null){
-            for (Booking booking: bookingsRepository.findAll()) {
-                if (booking.getBikeshop().getShopId().equals(shopId)){
-                    bookings.add(booking);
-                }
-            }
+        if (shopId == null) {
+            return new ArrayList<>();
         }
-      return bookings;
-
+        return bookingsRepository.findByBikeshop_ShopId(shopId);
     }
 }

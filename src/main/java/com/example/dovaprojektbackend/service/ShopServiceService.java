@@ -14,61 +14,58 @@ import java.util.UUID;
 @Service
 public class ShopServiceService {
 
-
-    private final ShopServiceRepository ydelserRepository;
-
+    private final ShopServiceRepository shopServiceRepository;
     private final BikeshopRepository bikeshopRepository;
 
-    public ShopServiceService(ShopServiceRepository ydelserRepository,BikeshopRepository bikeshopRepository ){
-        this.ydelserRepository = ydelserRepository;
+    public ShopServiceService(ShopServiceRepository shopServiceRepository, BikeshopRepository bikeshopRepository) {
+        this.shopServiceRepository = shopServiceRepository;
         this.bikeshopRepository = bikeshopRepository;
     }
 
 
 
-    public ShopService createYdelser(ShopService ydelser) {
-        if (ydelser.getShopId() != null) {
-            Bikeshop bikeshop = bikeshopRepository.findById(ydelser.getShopId())
-                    .orElseThrow(() -> new RuntimeException("Bikeshop not found with id: " + ydelser.getShopId()));
-            ydelser.setBikeshop(bikeshop);
+    public ShopService createShopService(ShopService shopService) {
+        if (shopService.getShopId() != null) {
+            Bikeshop bikeshop = bikeshopRepository.findById(shopService.getShopId())
+                    .orElseThrow(() -> new RuntimeException("Bikeshop not found with id: " + shopService.getShopId()));
+            shopService.setBikeshop(bikeshop);
         }
 
-        return ydelserRepository.save(ydelser);
+        return shopServiceRepository.save(shopService);
     }
 
-    public List<ShopService> getShopsService(UUID shopId){
-        List<ShopService> shopServices = new ArrayList<>();
-        if (shopId != null){
-            for (ShopService service:ydelserRepository.findAll()) {
-                if (shopId.equals(service.getBikeshop().getShopId())){
-                    shopServices.add(service);
-                }
-            }
+    public List<ShopService> getShopServices(UUID shopId) {
+        if (shopId == null) {
+            return new ArrayList<>();
         }
-        return shopServices;
+        return shopServiceRepository.findByBikeshop_ShopId(shopId);
     }
 
-    public void deleteService(UUID serviceId){
-            if (ydelserRepository.existsById(serviceId)){
-                ydelserRepository.deleteById(serviceId);
-        }else {
-                throw new RuntimeException("service not found with id:" + serviceId);
-            }
-    }
+    public void deleteService(UUID serviceId, UUID shopId) {
+        ShopService service = shopServiceRepository.findById(serviceId)
+                .orElseThrow(() -> new RuntimeException("Service not found with id: " + serviceId));
 
-    public ShopService updateService(ShopService service){
-        ShopService oldService = new ShopService();
-        if (ydelserRepository.existsById(service.getShopServiceId())){
-            oldService = ydelserRepository.findById(service.getShopServiceId()).get();
-            oldService.setName(service.getName());
-            oldService.setPrice(service.getPrice());
-            oldService.setDuration(service.getDuration());
-            oldService.setDescription(service.getDescription());
-            ydelserRepository.save(oldService);
-        } else {
-            throw new RuntimeException("service existere ikke");
+        if (!service.getBikeshop().getShopId().equals(shopId)) {
+            throw new RuntimeException("You are not authorized to delete this service");
         }
-        return oldService;
+
+        shopServiceRepository.delete(service);
+    }
+
+    public ShopService updateService(ShopService service, UUID shopId) {
+        ShopService existingService = shopServiceRepository.findById(service.getShopServiceId())
+                .orElseThrow(() -> new RuntimeException("Service not found with id: " + service.getShopServiceId()));
+
+        if (!existingService.getBikeshop().getShopId().equals(shopId)) {
+            throw new RuntimeException("You are not authorized to update this service");
+        }
+
+        existingService.setName(service.getName());
+        existingService.setPrice(service.getPrice());
+        existingService.setDuration(service.getDuration());
+        existingService.setDescription(service.getDescription());
+
+        return shopServiceRepository.save(existingService);
     }
 
 }

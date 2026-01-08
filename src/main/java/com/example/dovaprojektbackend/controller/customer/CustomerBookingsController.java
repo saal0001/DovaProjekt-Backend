@@ -1,7 +1,5 @@
 package com.example.dovaprojektbackend.controller.customer;
 
-
-import com.example.dovaprojektbackend.model.ShopService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

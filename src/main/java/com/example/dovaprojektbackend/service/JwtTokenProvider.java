@@ -5,7 +5,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -73,15 +72,5 @@ public class JwtTokenProvider {
     public String getEmailFromToken(String token) {
         Claims claims = getClaims(token);
         return claims.get("email", String.class);
-    }
-
-    /**
-     * Henter rolle fra JWT token (custom claim)
-     * @param token JWT token
-     * @return brugerens rolle
-     */
-    public String getRoleFromToken(String token) {
-        Claims claims = getClaims(token);
-        return claims.get("role", String.class);
     }
 }

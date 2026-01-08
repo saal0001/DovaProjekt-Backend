@@ -1,7 +1,9 @@
 package com.example.dovaprojektbackend.controller;
 
+import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import com.example.dovaprojektbackend.service.ShopServiceService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.dovaprojektbackend.model.ShopService;
@@ -10,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/ydelser")
+@RequestMapping("/api/services")
 public class ShopServiceController {
 
     private final ShopServiceService shopServiceService;
@@ -21,24 +23,30 @@ public class ShopServiceController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('SHOP')")
-    public ShopService createYdelse(@RequestBody ShopService shopService) {
-        return shopServiceService.createYdelser(shopService);
+    public ShopService createShopService(@RequestBody ShopService shopService) {
+        return shopServiceService.createShopService(shopService);
     }
 
     @GetMapping("/shopServices")
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'SHOP')")
+    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasAnyRole('CUSTOMER', 'SHOP')")
     public List<ShopService> getShopServices(@RequestParam UUID shopId) {
-        return shopServiceService.getShopsService(shopId);
+        return shopServiceService.getShopServices(shopId);
     }
 
     @DeleteMapping("/delete")
-    public void deleteService(@RequestParam UUID serviceId){
-        shopServiceService.deleteService(serviceId);
+    @PreAuthorize("hasRole('SHOP')")
+    public void deleteService(@RequestParam UUID serviceId, Authentication authentication){
+        CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+        UUID shopId = userPrincipal.getUserId();
+        shopServiceService.deleteService(serviceId, shopId);
     }
 
     @PutMapping("/update")
-    public ShopService updateService(@RequestBody ShopService shopService){
-        return shopServiceService.updateService(shopService);
+    @PreAuthorize("hasRole('SHOP')")
+    public ShopService updateService(@RequestBody ShopService shopService, Authentication authentication){
+        CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
+        UUID shopId = userPrincipal.getUserId();
+        return shopServiceService.updateService(shopService, shopId);
     }
     
 

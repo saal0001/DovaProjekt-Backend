@@ -6,21 +6,23 @@ public class CreateBikeshopRequest {
     private String imageUrl;
     private Long phoneNumber;
     private String openingHours;
-    private Integer cvrNumber;
+    private String cvrNumber;
     private String address;
+    private String city;
     private String email;
 
     public CreateBikeshopRequest() {
     }
 
     public CreateBikeshopRequest(String shopName, String imageUrl, Long phoneNumber, String openingHours,
-                                Integer cvrNumber, String address, String email) {
+                                String cvrNumber, String address, String city, String email) {
         this.shopName = shopName;
         this.imageUrl = imageUrl;
         this.phoneNumber = phoneNumber;
         this.openingHours = openingHours;
         this.cvrNumber = cvrNumber;
         this.address = address;
+        this.city = city;
         this.email = email;
     }
 
@@ -56,11 +58,11 @@ public class CreateBikeshopRequest {
         this.openingHours = openingHours;
     }
 
-    public Integer getCvrNumber() {
+    public String getCvrNumber() {
         return cvrNumber;
     }
 
-    public void setCvrNumber(Integer cvrNumber) {
+    public void setCvrNumber(String cvrNumber) {
         this.cvrNumber = cvrNumber;
     }
 
@@ -70,6 +72,14 @@ public class CreateBikeshopRequest {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getEmail() {

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
@@ -46,8 +45,9 @@ public class Booking {
 
     }
 
-    public Booking(Customer customer, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
+    public Booking(Customer customer,Bikeshop bikeshop, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
         this.customer = customer;
+        this.bikeshop = bikeshop;
         this.shopService = shopService;
         this.status = status;
         this.createdAt = createdAt;
@@ -61,11 +61,11 @@ public class Booking {
         this.bookingId = bookingId;
     }
 
-    public Customer getUser() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setUser(Customer customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 
@@ -103,7 +103,7 @@ public class Booking {
 
     @JsonProperty("userId")
     public UUID getUserId() {
-        return user != null ? user.getUserId() : null;
+        return customer != null ? customer.getCustomerId() : null;
     }
 
 }

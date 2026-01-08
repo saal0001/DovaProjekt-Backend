@@ -15,33 +15,26 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public Customer getCustomerById(UUID userId){
-        return customerRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+    public Customer getCustomerById(UUID customerId) {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
     }
 
-    public Customer updateCustomer(UUID userId,Customer updatedCustomer){
-        Customer customer = getCustomerById(userId);
+    public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
+        Customer customer = getCustomerById(customerId);
 
-        // Opdater felter
-        if (updatedCustomer.getName() != null) {
+        if (updatedCustomer != null) {
             customer.setName(updatedCustomer.getName());
-        }
-        if (updatedCustomer.getEmail() != null) {
             customer.setEmail(updatedCustomer.getEmail());
-        }
-        if (updatedCustomer.getPhone() != null) {
-            customer.setPhone(updatedCustomer.getPhone());
-        }
-        if (updatedCustomer.getAddress() != null) {
             customer.setAddress(updatedCustomer.getAddress());
-        }
+            customer.setPhone(updatedCustomer.getPhone());
 
+        }
         return customerRepository.save(customer);
     }
 
-    public void deleteCustomer(UUID userId){
-        Customer customer = getCustomerById(userId);
+    public void deleteCustomer(UUID customerId) {
+        Customer customer = getCustomerById(customerId);
         customerRepository.delete(customer);
     }
 }
