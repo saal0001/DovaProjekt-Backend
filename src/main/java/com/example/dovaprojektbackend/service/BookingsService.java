@@ -86,4 +86,28 @@ public class BookingsService {
         }
         return bookingsRepository.findByBikeshop_ShopId(shopId);
     }
+
+    public List<Booking> getCustomerBookings(UUID customerId) {
+        if (customerId == null) {
+            return new ArrayList<>();
+        }
+        return bookingsRepository.findByCustomer_CustomerId(customerId);
+    }
+
+    @Transactional
+    public Booking updateBookingStatus(UUID bookingId, BookingStatus newStatus, UUID shopId) {
+        // Verify booking exists
+        Booking booking = bookingsRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking ikke fundet"));
+
+        // Verify booking belongs to shop
+        if (!booking.getBikeshop().getShopId().equals(shopId)) {
+            throw new RuntimeException("Du kan kun opdatere bookinger for din egen butik");
+        }
+
+        // Update status
+        booking.setStatus(newStatus);
+
+        return bookingsRepository.save(booking);
+    }
 }

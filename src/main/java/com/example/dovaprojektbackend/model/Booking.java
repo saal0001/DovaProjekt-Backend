@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
@@ -24,10 +25,12 @@ public class Booking {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnoreProperties("bookings")
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
+    @JsonIgnoreProperties("bookings")
     private Bikeshop bikeshop;
 
     @ManyToOne

@@ -28,6 +28,12 @@ public class BikeShopController {
         this.supabaseAuthService = supabaseAuthService;
     }
 
+    @GetMapping("/{shopId}")
+    public ResponseEntity<Bikeshop> getBikeShopById(@PathVariable UUID shopId) {
+        Bikeshop bikeshop = bikeShopService.getBikeShopById(shopId);
+        return ResponseEntity.ok(bikeshop);
+    }
+
     @PutMapping("/{shopId}")
     @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('SHOP')")
     public ResponseEntity<Bikeshop> update(@Valid @RequestBody UpdateBikeshopRequest request, @PathVariable UUID shopId){

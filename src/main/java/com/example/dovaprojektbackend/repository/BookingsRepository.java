@@ -9,4 +9,5 @@ import java.util.UUID;
 
 public interface BookingsRepository extends JpaRepository<Booking, UUID> {
     List<Booking> findByBikeshop_ShopId(UUID shopId);
+    List<Booking> findByCustomer_CustomerId(UUID customerId);
 }
