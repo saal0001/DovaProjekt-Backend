@@ -1,11 +1,15 @@
 package com.example.dovaprojektbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -23,9 +27,12 @@ public class ShopService {
         }
     }
 
+    @NotBlank(message = "Service navn er påkrævet")
     @Column(nullable = false, length = 100)
     private String name;
 
+    @NotNull(message = "Pris er påkrævet")
+    @Positive(message = "Pris skal være positiv")
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal price;
 
@@ -34,9 +41,6 @@ public class ShopService {
 
     @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
@@ -47,23 +51,14 @@ public class ShopService {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)  // Only for input
     private UUID shopId;
 
-    public ShopService() {}
+    @OneToMany(mappedBy = "shopService")
+    @JsonIgnoreProperties("shopService")
+    private List<Booking> bookings = new ArrayList<>();
 
-    public ShopService(UUID ShopServiceId, String name, BigDecimal price, String duration, String description, Bikeshop bikeshop) {
-        this.shopServiceId = ShopServiceId;
-        this.name = name;
-        this.price = price;
-        this.duration = duration;
-        this.description = description;
-        this.bikeshop = bikeshop;
-    }
+    public ShopService() {}
 
     public UUID getShopServiceId() {
         return shopServiceId;
-    }
-
-    public void setId(UUID ShopServiceId) {
-        this.shopServiceId = ShopServiceId;
     }
 
     public String getName() {
@@ -98,14 +93,6 @@ public class ShopService {
         this.description = description;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public Bikeshop getBikeshop() {
         return bikeshop;
     }
@@ -120,5 +107,13 @@ public class ShopService {
 
     public void setShopId(UUID shopId) {
         this.shopId = shopId;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
     }
 }

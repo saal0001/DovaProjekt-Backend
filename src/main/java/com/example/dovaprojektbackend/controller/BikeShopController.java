@@ -3,8 +3,8 @@ package com.example.dovaprojektbackend.controller;
 import com.example.dovaprojektbackend.dto.CreateBikeshopRequest;
 import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
 import com.example.dovaprojektbackend.model.Bikeshop;
-import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,11 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.dovaprojektbackend.service.BikeShopService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/shops")
+@RequestMapping("/api/shops")
 public class BikeShopController {
 
 
@@ -29,16 +28,15 @@ public class BikeShopController {
         this.supabaseAuthService = supabaseAuthService;
     }
 
-    @PostMapping("/create")
-    @PreAuthorize("hasRole('SHOP')")
-    public ResponseEntity<Bikeshop> createShop(@RequestBody CreateBikeshopRequest request){
-        Bikeshop bikeshop = bikeShopService.createShop(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(bikeshop);
+    @GetMapping("/{shopId}")
+    public ResponseEntity<Bikeshop> getBikeShopById(@PathVariable UUID shopId) {
+        Bikeshop bikeshop = bikeShopService.getBikeShopById(shopId);
+        return ResponseEntity.ok(bikeshop);
     }
 
     @PutMapping("/{shopId}")
     @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('SHOP')")
-    public ResponseEntity<Bikeshop> update(@RequestBody UpdateBikeshopRequest request, @PathVariable UUID shopId){
+    public ResponseEntity<Bikeshop> update(@Valid @RequestBody UpdateBikeshopRequest request, @PathVariable UUID shopId){
         Bikeshop updateBikeShop = bikeShopService.updateBikeshop(request, shopId);
         return ResponseEntity.ok(updateBikeShop);
     }

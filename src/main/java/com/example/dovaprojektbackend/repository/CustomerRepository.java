@@ -1,10 +1,10 @@
 package com.example.dovaprojektbackend.repository;
 
-import com.example.dovaprojektbackend.model.Bikeshop;
+import com.example.dovaprojektbackend.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 
 import java.util.UUID;
 
-public interface BikeshopRepository extends JpaRepository<Bikeshop, UUID> {
+public interface CustomerRepository extends JpaRepository<Customer, UUID> {
 }

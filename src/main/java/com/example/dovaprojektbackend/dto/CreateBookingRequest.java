@@ -1,10 +1,14 @@
 package com.example.dovaprojektbackend.dto;
 
+import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
 public class CreateBookingRequest {
 
+    @NotNull(message = "Bruger ID er påkrævet")
     private UUID userId;
+
+    @NotNull(message = "Service ID er påkrævet")
     private UUID shopServiceId;
 
     public CreateBookingRequest() {

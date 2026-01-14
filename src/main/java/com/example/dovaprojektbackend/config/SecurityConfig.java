@@ -34,8 +34,14 @@ public class SecurityConfig {
 
                 // Konfigurer endpoint beskyttelse
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints (ingen authentication krævet)
-                        .requestMatchers("/api/public/**", "/api/health/**","/h2-console/**","/shops/**","/ydelser/**","/api/**").permitAll()
+                        // H2 Console (kun til development)
+                        .requestMatchers("/h2-console/**").permitAll()
+
+                        // Public endpoints - tillad uauthenticated users at browse shops og services
+                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/customers/bikeshops").permitAll()
+                        .requestMatchers("/api/services/shopServices").permitAll()
+                        .requestMatchers("/api/shops/*").permitAll()
 
                         // Alle andre endpoints kræver authentication
                         .anyRequest().authenticated()

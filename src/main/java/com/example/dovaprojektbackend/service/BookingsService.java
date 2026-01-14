@@ -5,41 +5,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.example.dovaprojektbackend.model.Customer;
+import com.example.dovaprojektbackend.repository.CustomerRepository;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.dovaprojektbackend.model.Booking;
 import com.example.dovaprojektbackend.model.ShopService;
-import com.example.dovaprojektbackend.model.User;
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
-import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BookingsRepository;
 import com.example.dovaprojektbackend.repository.ShopServiceRepository;
-import com.example.dovaprojektbackend.repository.UserRepository;
 
 @Service
 public class BookingsService {
 
     private final BookingsRepository bookingsRepository;
-    private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final ShopServiceRepository shopServiceRepository;
 
-    public BookingsService(BookingsRepository bookingsRepository,
-                          UserRepository userRepository,
-                          ShopServiceRepository shopServiceRepository) {
+    public BookingsService(BookingsRepository bookingsRepository, CustomerRepository customerRepository, ShopServiceRepository shopServiceRepository) {
         this.bookingsRepository = bookingsRepository;
-        this.userRepository = userRepository;
+        this.customerRepository = customerRepository;
         this.shopServiceRepository = shopServiceRepository;
     }
 
-    public Booking createBooking(UUID userId, UUID shopServiceId) {
-        // Verify user exists and is a customer
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Bruger ikke fundet"));
-
-        if (user.getRole() != Role.customer) {
-            throw new RuntimeException("Kun kunder kan oprette bookinger");
-        }
+    @Transactional
+    public Booking createBooking(UUID customerId, UUID shopServiceId) {
+        // Verify customer exists
+        Customer customer = customerRepository.findById(customerId)
+            .orElseThrow(() -> new RuntimeException("Customer ikke fundet"));
 
         // Verify shop service exists
         ShopService shopService = shopServiceRepository.findById(shopServiceId)
@@ -47,9 +42,10 @@ public class BookingsService {
 
         Bikeshop bikeshop = shopService.getBikeshop();
 
-                // Create new booking with status NY_BOOKING
+        // Create new booking with status NY_BOOKING
         Booking booking = new Booking(
-            user,bikeshop,
+            customer,
+            bikeshop,
             shopService,
             BookingStatus.NY_BOOKING,
             LocalDateTime.now()
@@ -58,13 +54,14 @@ public class BookingsService {
         return bookingsRepository.save(booking);
     }
 
-    public Booking cancelBooking(UUID bookingId, UUID userId) {
+    @Transactional
+    public Booking cancelBooking(UUID bookingId, UUID customerId) {
         // Verify booking exists
         Booking booking = bookingsRepository.findById(bookingId)
             .orElseThrow(() -> new RuntimeException("Booking ikke fundet"));
 
-        // Verify booking belongs to user
-        if (!booking.getUser().getUserId().equals(userId)) {
+        // Verify booking belongs to customer
+        if (!booking.getCustomer().getCustomerId().equals(customerId)) {
             throw new RuntimeException("Du kan kun annullere dine egne bookinger");
         }
 
@@ -84,15 +81,33 @@ public class BookingsService {
     }
 
     public List<Booking> getBookings(UUID shopId){
-        List<Booking> bookings = new ArrayList<>();
-        if (shopId != null){
-            for (Booking booking: bookingsRepository.findAll()) {
-                if (booking.getBikeshop().getShopId().equals(shopId)){
-                    bookings.add(booking);
-                }
-            }
+        if (shopId == null) {
+            return new ArrayList<>();
         }
-      return bookings;
+        return bookingsRepository.findByBikeshop_ShopId(shopId);
+    }
 
+    public List<Booking> getCustomerBookings(UUID customerId) {
+        if (customerId == null) {
+            return new ArrayList<>();
+        }
+        return bookingsRepository.findByCustomer_CustomerId(customerId);
+    }
+
+    @Transactional
+    public Booking updateBookingStatus(UUID bookingId, BookingStatus newStatus, UUID shopId) {
+        // Verify booking exists
+        Booking booking = bookingsRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking ikke fundet"));
+
+        // Verify booking belongs to shop
+        if (!booking.getBikeshop().getShopId().equals(shopId)) {
+            throw new RuntimeException("Du kan kun opdatere bookinger for din egen butik");
+        }
+
+        // Update status
+        booking.setStatus(newStatus);
+
+        return bookingsRepository.save(booking);
     }
 }

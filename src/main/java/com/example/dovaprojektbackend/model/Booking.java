@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
@@ -24,12 +24,13 @@ public class Booking {
     }
 
     @ManyToOne
-    @JoinColumn(name = "users_id", nullable = false)
-    @JsonIgnore
-    private User user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnoreProperties("bookings")
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "shop_id", nullable = false)
+    @JsonIgnoreProperties("bookings")
     private Bikeshop bikeshop;
 
     @ManyToOne
@@ -47,8 +48,8 @@ public class Booking {
 
     }
 
-    public Booking(User user,Bikeshop bikeshop, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
-        this.user = user;
+    public Booking(Customer customer,Bikeshop bikeshop, ShopService shopService, BookingStatus status, LocalDateTime createdAt) {
+        this.customer = customer;
         this.bikeshop = bikeshop;
         this.shopService = shopService;
         this.status = status;
@@ -63,12 +64,12 @@ public class Booking {
         this.bookingId = bookingId;
     }
 
-    public User getUser() {
-        return user;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Bikeshop getBikeshop() {
@@ -105,7 +106,7 @@ public class Booking {
 
     @JsonProperty("userId")
     public UUID getUserId() {
-        return user != null ? user.getUserId() : null;
+        return customer != null ? customer.getCustomerId() : null;
     }
 
 }

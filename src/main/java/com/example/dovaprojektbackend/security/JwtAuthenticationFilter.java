@@ -1,16 +1,15 @@
 package com.example.dovaprojektbackend.security;
 
 import com.example.dovaprojektbackend.model.Bikeshop;
-import com.example.dovaprojektbackend.model.User;
+import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.model.enums.Role;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
-import com.example.dovaprojektbackend.repository.UserRepository;
+import com.example.dovaprojektbackend.repository.CustomerRepository;
 import com.example.dovaprojektbackend.service.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,15 +26,12 @@ import java.util.UUID;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
+    private final CustomerRepository  customerRepository;
     private final BikeshopRepository bikeshopRepository;
 
-    public JwtAuthenticationFilter(
-            @Autowired(required = false) JwtTokenProvider jwtTokenProvider,
-            UserRepository userRepository,
-            BikeshopRepository bikeshopRepository) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider,CustomerRepository  customerRepository, BikeshopRepository bikeshopRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepository = userRepository;
+        this.customerRepository = customerRepository;
         this.bikeshopRepository = bikeshopRepository;
     }
 
@@ -46,8 +42,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         String authHeader = request.getHeader("Authorization");
-
-        System.out.println("auth: " + request.getMethod() +  " " + request.getRequestURI());
 
         // 1️⃣ Ingen Authorization-header → Fortsæt uden authentication
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -122,10 +116,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
      * @return Brugerens rolle eller null hvis ikke fundet
      */
     private Role getUserRoleFromDatabase(UUID userId) {
-        // Tjek først i users tabel (customers og admins)
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()) {
-            return user.get().getRole();
+        // Tjek først i users tabel (customers)
+        Optional<Customer> customer = customerRepository.findById(userId);
+        if (customer.isPresent()) {
+            return Role.customer;
         }
 
         // Tjek derefter i bikeshop tabel
