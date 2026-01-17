@@ -2,6 +2,7 @@ package com.example.dovaprojektbackend.controller.customer;
 
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.model.Customer;
+import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import com.example.dovaprojektbackend.service.BikeShopService;
 import com.example.dovaprojektbackend.service.CustomerService;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
@@ -9,10 +10,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/customers")
@@ -22,10 +23,10 @@ public class CustomerProfileController {
     private final SupabaseAuthService supabaseAuthService;
     private final BikeShopService bikeShopService;
 
-    public CustomerProfileController(CustomerService customerService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopServic) {
+    public CustomerProfileController(CustomerService customerService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopService) {
         this.customerService = customerService;
         this.supabaseAuthService = supabaseAuthService;
-        this.bikeShopService = bikeShopServic;
+        this.bikeShopService = bikeShopService;
     }
 
     // Hent alle shops for kunder (public endpoint - ingen login krævet)
@@ -34,25 +35,25 @@ public class CustomerProfileController {
         return ResponseEntity.ok(bikeShopService.findAll());
     }
 
-    @GetMapping("/{userId}")
-    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable UUID userId) {
-        Customer customer = customerService.getCustomerById(userId);
+    @GetMapping("/profile")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Customer> getMyProfile(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        Customer customer = customerService.getCustomerById(principal.getUserId());
         return ResponseEntity.ok(customer);
     }
 
-    @PutMapping("/{userId}")
-    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable UUID userId, @Valid @RequestBody Customer customer) {
-        Customer customerUpdated = customerService.updateCustomer(userId, customer);
+    @PutMapping("/profile")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Customer> updateMyProfile(@Valid @RequestBody Customer customer, @AuthenticationPrincipal CustomUserPrincipal principal) {
+        Customer customerUpdated = customerService.updateCustomer(principal.getUserId(), customer);
         return ResponseEntity.ok(customerUpdated);
     }
 
-    @DeleteMapping("/delete-account/{userId}")
-    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID userId) {
-        customerService.deleteCustomer(userId);
-        supabaseAuthService.deleteUser(userId);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/account")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        customerService.deleteCustomer(principal.getUserId());
+        supabaseAuthService.deleteUser(principal.getUserId());
+        return ResponseEntity.noContent().build();
     }
 }

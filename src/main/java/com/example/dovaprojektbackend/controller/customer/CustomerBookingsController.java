@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,41 +27,38 @@ public class CustomerBookingsController {
     }
 
     @PostMapping
-    @PreAuthorize("#request.userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Booking> createBooking(@Valid @RequestBody CreateBookingRequest request) {
-        Booking booking = bookingsService.createBooking(request.getUserId(), request.getShopServiceId());
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Booking> createBooking(@Valid @RequestBody CreateBookingRequest request, @AuthenticationPrincipal CustomUserPrincipal principal) {
+        Booking booking = bookingsService.createBooking(
+                principal.getUserId(),
+                request.getShopServiceId()
+        );
         return ResponseEntity.status(HttpStatus.CREATED).body(booking);
     }
 
-    @DeleteMapping("/{bookingId}/user/{userId}")
-    @PreAuthorize("#userId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public ResponseEntity<Booking> cancelBooking(@PathVariable UUID bookingId, @PathVariable UUID userId) {
-        Booking booking = bookingsService.cancelBooking(bookingId, userId);
-        return ResponseEntity.ok(booking);
+    @DeleteMapping("/{bookingId}")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<Booking> cancelBooking(@PathVariable UUID bookingId, @AuthenticationPrincipal CustomUserPrincipal principal) {
+        bookingsService.cancelBooking(bookingId, principal.getUserId());
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/customer/{customerId}")
-    @PreAuthorize("#customerId == authentication.principal.getUserId() and hasRole('CUSTOMER')")
-    public List<Booking> getCustomerBookings(@PathVariable UUID customerId) {
-        return bookingsService.getCustomerBookings(customerId);
+    @GetMapping("/my-bookings")
+    @PreAuthorize("hasRole('CUSTOMER')")
+    public ResponseEntity<List<Booking>> getMyBookings(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        return ResponseEntity.ok(bookingsService.getCustomerBookings(principal.getUserId()));
     }
 
-    @GetMapping("/bookings")
-    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('SHOP')")
-    public List<Booking> getShopServices(@RequestParam UUID shopId) {
-        return bookingsService.getBookings(shopId);
+    @GetMapping("/shop")
+    @PreAuthorize("hasRole('SHOP')")
+    public ResponseEntity<List<Booking>> getShopBookings(@AuthenticationPrincipal CustomUserPrincipal principal) {
+        return ResponseEntity.ok(bookingsService.getBookings(principal.getUserId()));
     }
 
     @PutMapping("/{bookingId}/status")
     @PreAuthorize("hasRole('SHOP')")
-    public ResponseEntity<Booking> updateBookingStatus(
-            @PathVariable UUID bookingId,
-            @Valid @RequestBody UpdateBookingStatusRequest request,
-            Authentication authentication) {
-        CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        UUID shopId = userPrincipal.getUserId();
-
-        Booking updatedBooking = bookingsService.updateBookingStatus(bookingId, request.getStatus(), shopId);
+    public ResponseEntity<Booking> updateBookingStatus(@PathVariable UUID bookingId, @Valid @RequestBody UpdateBookingStatusRequest request, @AuthenticationPrincipal CustomUserPrincipal principal) {
+        Booking updatedBooking = bookingsService.updateBookingStatus(bookingId, request.getStatus(), principal.getUserId());
         return ResponseEntity.ok(updatedBooking);
     }
 }

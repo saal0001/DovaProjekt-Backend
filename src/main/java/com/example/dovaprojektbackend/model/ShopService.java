@@ -61,6 +61,10 @@ public class ShopService {
         return shopServiceId;
     }
 
+    public void setShopServiceId(UUID shopServiceId) {
+        this.shopServiceId = shopServiceId;
+    }
+
     public String getName() {
         return name;
     }

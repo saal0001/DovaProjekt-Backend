@@ -3,7 +3,10 @@ package com.example.dovaprojektbackend.controller;
 import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import com.example.dovaprojektbackend.service.ShopServiceService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,31 +27,41 @@ public class ShopServiceController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('SHOP')")
-    public ShopService createShopService(@Valid @RequestBody ShopService shopService) {
-        return shopServiceService.createShopService(shopService);
+    public ResponseEntity<ShopService> createShopService(@Valid @RequestBody ShopService shopService, @AuthenticationPrincipal CustomUserPrincipal principal) {
+
+        // Sæt shopId fra autentificeret bruger
+        shopService.setShopId(principal.getUserId());
+
+        ShopService shopServiceCreated = shopServiceService.createShopService(shopService);
+        return ResponseEntity.status(HttpStatus.CREATED).body(shopServiceCreated);
     }
 
     // Hent services for en shop (public endpoint - ingen login krævet)
     @GetMapping("/shopServices")
-    public List<ShopService> getShopServices(@RequestParam UUID shopId) {
-        return shopServiceService.getShopServices(shopId);
+    public ResponseEntity<List<ShopService>> getShopServices(@RequestParam UUID shopId) {
+        List<ShopService> shopServices = shopServiceService.getShopServices(shopId);
+        return ResponseEntity.ok(shopServices);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/{serviceId}")
     @PreAuthorize("hasRole('SHOP')")
-    public void deleteService(@RequestParam UUID serviceId, Authentication authentication){
-        CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        UUID shopId = userPrincipal.getUserId();
-        shopServiceService.deleteService(serviceId, shopId);
+    public ResponseEntity<Void> deleteService(@PathVariable UUID serviceId, @AuthenticationPrincipal CustomUserPrincipal principal){
+
+        shopServiceService.deleteService(serviceId, principal.getUserId());
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update")
+    @PutMapping("/{serviceId}")
     @PreAuthorize("hasRole('SHOP')")
-    public ShopService updateService(@Valid @RequestBody ShopService shopService, Authentication authentication){
-        CustomUserPrincipal userPrincipal = (CustomUserPrincipal) authentication.getPrincipal();
-        UUID shopId = userPrincipal.getUserId();
-        return shopServiceService.updateService(shopService, shopId);
-    }
-    
+    public ResponseEntity<ShopService> updateService(@Valid @RequestBody ShopService shopService,   @PathVariable UUID serviceId, @AuthenticationPrincipal CustomUserPrincipal principal){
 
+        shopService.setShopServiceId(serviceId);
+        shopService.setShopId(principal.getUserId());
+
+        ShopService updated = shopServiceService.updateService(
+                shopService,
+                principal.getUserId()
+        );
+        return ResponseEntity.ok(updated);
+    }
 }

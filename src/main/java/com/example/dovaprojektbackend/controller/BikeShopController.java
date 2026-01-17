@@ -1,14 +1,15 @@
 package com.example.dovaprojektbackend.controller;
 
-import com.example.dovaprojektbackend.dto.CreateBikeshopRequest;
+
 import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
 import com.example.dovaprojektbackend.model.Bikeshop;
+import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import com.example.dovaprojektbackend.service.SupabaseAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.dovaprojektbackend.service.BikeShopService;
@@ -34,18 +35,18 @@ public class BikeShopController {
         return ResponseEntity.ok(bikeshop);
     }
 
-    @PutMapping("/{shopId}")
-    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('SHOP')")
-    public ResponseEntity<Bikeshop> update(@Valid @RequestBody UpdateBikeshopRequest request, @PathVariable UUID shopId){
-        Bikeshop updateBikeShop = bikeShopService.updateBikeshop(request, shopId);
+    @PutMapping("/profile")
+    @PreAuthorize("hasRole('SHOP')")
+    public ResponseEntity<Bikeshop> updateMyProfile(@Valid @RequestBody UpdateBikeshopRequest request, @AuthenticationPrincipal CustomUserPrincipal principal){
+        Bikeshop updateBikeShop = bikeShopService.updateBikeshop(request, principal.getUserId());
         return ResponseEntity.ok(updateBikeShop);
     }
 
-    @DeleteMapping("/delete-account/{shopId}")
-    @PreAuthorize("#shopId == authentication.principal.getUserId() and hasRole('SHOP')")
-    public ResponseEntity<Void> deleteAccount(@PathVariable UUID shopId){
-        bikeShopService.deleteBikeShop(shopId);
-        supabaseAuthService.deleteUser(shopId);
+    @DeleteMapping("/account")
+    @PreAuthorize("hasRole('SHOP')")
+    public ResponseEntity<Void> deleteMyAccount(@AuthenticationPrincipal CustomUserPrincipal principal){
+        bikeShopService.deleteBikeShop(principal.getUserId());
+        supabaseAuthService.deleteUser(principal.getUserId());
         return ResponseEntity.ok().build();
     }
 
