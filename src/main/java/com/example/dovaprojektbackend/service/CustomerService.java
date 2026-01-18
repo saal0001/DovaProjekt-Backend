@@ -2,8 +2,9 @@ package com.example.dovaprojektbackend.service;
 
 import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.repository.CustomerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.UUID;
 
@@ -11,9 +12,11 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final SupabaseAuthService supabaseAuthService;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, @Autowired(required = false) SupabaseAuthService supabaseAuthService) {
         this.customerRepository = customerRepository;
+        this.supabaseAuthService = supabaseAuthService;
     }
 
     // ✅ Read-only
@@ -22,7 +25,7 @@ public class CustomerService {
                 .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
     }
 
-    @Transactional
+
     public Customer updateCustomer(UUID customerId, Customer updatedCustomer) {
         Customer customer = getCustomerById(customerId);
 
@@ -34,9 +37,10 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    @Transactional
+
     public void deleteCustomer(UUID customerId) {
         Customer customer = getCustomerById(customerId);
+        supabaseAuthService.deleteUser(customerId);
         customerRepository.delete(customer);
     }
 }

@@ -3,15 +3,15 @@ package com.example.dovaprojektbackend.dto;
 import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 
-public class CreateBookingRequest {
+public class BookingDto {
 
     @NotNull(message = "Service ID er påkrævet")
     private UUID shopServiceId;
 
-    public CreateBookingRequest() {
+    public BookingDto() {
     }
 
-    public CreateBookingRequest(UUID shopServiceId) {
+    public BookingDto(UUID shopServiceId) {
         this.shopServiceId = shopServiceId;
     }
 

@@ -49,8 +49,8 @@ public class Bikeshop {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bikeshop")
-    private List<ShopService> shopServices = new ArrayList<>();
+        @OneToMany(cascade = CascadeType.ALL, mappedBy = "bikeshop")
+        private List<ShopService> shopServices = new ArrayList<>();
 
     @OneToMany(mappedBy = "bikeshop")
     @JsonIgnoreProperties("bikeshop")
@@ -137,5 +137,13 @@ public class Bikeshop {
 
     public void setBookings(List<Booking> bookings) {
         this.bookings = bookings;
+    }
+
+    public List<ShopService> getShopServices() {
+        return shopServices;
+    }
+
+    public void setShopServices(List<ShopService> shopServices) {
+        this.shopServices = shopServices;
     }
 }

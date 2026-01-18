@@ -2,10 +2,9 @@ package com.example.dovaprojektbackend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
-public class UpdateBikeshopRequest {
+public class BikeshopDto {
 
     @NotBlank(message = "Shop navn er påkrævet")
     private String shopName;
@@ -32,11 +31,11 @@ public class UpdateBikeshopRequest {
     @Email(message = "Email skal være gyldig")
     private String email;
 
-    public UpdateBikeshopRequest() {
+    public BikeshopDto() {
     }
 
-    public UpdateBikeshopRequest(String shopName, String imageUrl, String phoneNumber, String openingHours,
-                                String cvrNumber, String address, String city, String email) {
+    public BikeshopDto(String shopName, String imageUrl, String phoneNumber, String openingHours,
+                       String cvrNumber, String address, String city, String email) {
         this.shopName = shopName;
         this.imageUrl = imageUrl;
         this.phoneNumber = phoneNumber;

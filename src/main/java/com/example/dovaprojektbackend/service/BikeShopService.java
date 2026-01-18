@@ -1,10 +1,10 @@
 package com.example.dovaprojektbackend.service;
 
-import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
+import com.example.dovaprojektbackend.dto.BikeshopDto;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +14,11 @@ public class BikeShopService {
 
 
     private final BikeshopRepository bikeShopRepository;
+    private final SupabaseAuthService supabaseAuthService;
 
-   public BikeShopService(BikeshopRepository bikeShopRepository){
+   public BikeShopService(BikeshopRepository bikeShopRepository, @Autowired(required = false) SupabaseAuthService supabaseAuthService){
        this.bikeShopRepository = bikeShopRepository;
+       this.supabaseAuthService = supabaseAuthService;
    }
 
 
@@ -29,8 +31,8 @@ public class BikeShopService {
        return bikeShopRepository.findAll();
    }
 
-   @Transactional
-   public Bikeshop updateBikeshop(UpdateBikeshopRequest request, UUID shopId ){
+
+   public Bikeshop updateBikeshop(BikeshopDto request, UUID shopId ){
        Bikeshop bikeshop = getBikeShopById(shopId);
 
            bikeshop.setShopName(request.getShopName());
@@ -46,10 +48,11 @@ public class BikeShopService {
    }
 
 
-   @Transactional
+
    public void deleteBikeShop(UUID shopId) {
        Bikeshop bikeshop = getBikeShopById(shopId);
        bikeShopRepository.delete(bikeshop);
+       supabaseAuthService.deleteUser(shopId);
    }
 
 }

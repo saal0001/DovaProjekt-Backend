@@ -108,13 +108,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Henter brugerens rolle fra databasen.
-     * Tjekker først users tabel, derefter bikeshop tabel.
-     *
-     * @param userId Brugerens UUID
-     * @return Brugerens rolle eller null hvis ikke fundet
-     */
+
     private Role getUserRoleFromDatabase(UUID userId) {
         // Tjek først i users tabel (customers)
         Optional<Customer> customer = customerRepository.findById(userId);

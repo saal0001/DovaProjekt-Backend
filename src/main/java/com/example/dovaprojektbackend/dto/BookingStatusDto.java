@@ -3,15 +3,15 @@ package com.example.dovaprojektbackend.dto;
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
 import jakarta.validation.constraints.NotNull;
 
-public class UpdateBookingStatusRequest {
+public class BookingStatusDto {
 
     @NotNull(message = "Status er påkrævet")
     private BookingStatus status;
 
-    public UpdateBookingStatusRequest() {
+    public BookingStatusDto() {
     }
 
-    public UpdateBookingStatusRequest(BookingStatus status) {
+    public BookingStatusDto(BookingStatus status) {
         this.status = status;
     }
 

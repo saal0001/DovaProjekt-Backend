@@ -1,6 +1,6 @@
 package com.example.dovaprojektbackend.controller.customer;
 
-import com.example.dovaprojektbackend.dto.UpdateBookingStatusRequest;
+import com.example.dovaprojektbackend.dto.BookingStatusDto;
 import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-import com.example.dovaprojektbackend.dto.CreateBookingRequest;
+import com.example.dovaprojektbackend.dto.BookingDto;
 import com.example.dovaprojektbackend.model.Booking;
 import com.example.dovaprojektbackend.service.BookingsService;
 
@@ -28,7 +28,7 @@ public class CustomerBookingsController {
 
     @PostMapping
     @PreAuthorize("hasRole('CUSTOMER')")
-    public ResponseEntity<Booking> createBooking(@Valid @RequestBody CreateBookingRequest request, @AuthenticationPrincipal CustomUserPrincipal principal) {
+    public ResponseEntity<Booking> createBooking(@Valid @RequestBody BookingDto request, @AuthenticationPrincipal CustomUserPrincipal principal) {
         Booking booking = bookingsService.createBooking(
                 principal.getUserId(),
                 request.getShopServiceId()
@@ -57,7 +57,7 @@ public class CustomerBookingsController {
 
     @PutMapping("/{bookingId}/status")
     @PreAuthorize("hasRole('SHOP')")
-    public ResponseEntity<Booking> updateBookingStatus(@PathVariable UUID bookingId, @Valid @RequestBody UpdateBookingStatusRequest request, @AuthenticationPrincipal CustomUserPrincipal principal) {
+    public ResponseEntity<Booking> updateBookingStatus(@PathVariable UUID bookingId, @Valid @RequestBody BookingStatusDto request, @AuthenticationPrincipal CustomUserPrincipal principal) {
         Booking updatedBooking = bookingsService.updateBookingStatus(bookingId, request.getStatus(), principal.getUserId());
         return ResponseEntity.ok(updatedBooking);
     }

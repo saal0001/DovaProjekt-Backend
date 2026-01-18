@@ -7,8 +7,6 @@ import java.util.UUID;
 import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.repository.CustomerRepository;
 import com.example.dovaprojektbackend.model.Bikeshop;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import com.example.dovaprojektbackend.model.Booking;
@@ -16,6 +14,7 @@ import com.example.dovaprojektbackend.model.ShopService;
 import com.example.dovaprojektbackend.model.enums.BookingStatus;
 import com.example.dovaprojektbackend.repository.BookingsRepository;
 import com.example.dovaprojektbackend.repository.ShopServiceRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class BookingsService {
@@ -30,7 +29,7 @@ public class BookingsService {
         this.shopServiceRepository = shopServiceRepository;
     }
 
-    @Transactional
+
     public Booking createBooking(UUID customerId, UUID shopServiceId) {
         // Verify customer exists
         Customer customer = customerRepository.findById(customerId)
@@ -54,7 +53,6 @@ public class BookingsService {
         return bookingsRepository.save(booking);
     }
 
-    @Transactional
     public Booking cancelBooking(UUID bookingId, UUID customerId) {
         // Verify booking exists
         Booking booking = bookingsRepository.findById(bookingId)
@@ -96,7 +94,7 @@ public class BookingsService {
         return bookingsRepository.findByCustomer_CustomerId(customerId);
     }
 
-    @Transactional
+
     public Booking updateBookingStatus(UUID bookingId, BookingStatus newStatus, UUID shopId) {
         // Verify booking exists
         Booking booking = bookingsRepository.findById(bookingId)

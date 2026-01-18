@@ -5,9 +5,7 @@ import com.example.dovaprojektbackend.model.Customer;
 import com.example.dovaprojektbackend.security.CustomUserPrincipal;
 import com.example.dovaprojektbackend.service.BikeShopService;
 import com.example.dovaprojektbackend.service.CustomerService;
-import com.example.dovaprojektbackend.service.SupabaseAuthService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,12 +18,11 @@ import java.util.List;
 public class CustomerProfileController {
 
     private final CustomerService customerService;
-    private final SupabaseAuthService supabaseAuthService;
+
     private final BikeShopService bikeShopService;
 
-    public CustomerProfileController(CustomerService customerService, @Autowired(required = false) SupabaseAuthService supabaseAuthService, BikeShopService bikeShopService) {
+    public CustomerProfileController(CustomerService customerService, BikeShopService bikeShopService) {
         this.customerService = customerService;
-        this.supabaseAuthService = supabaseAuthService;
         this.bikeShopService = bikeShopService;
     }
 
@@ -49,11 +46,11 @@ public class CustomerProfileController {
         return ResponseEntity.ok(customerUpdated);
     }
 
+
     @DeleteMapping("/account")
     @PreAuthorize("hasRole('CUSTOMER')")
     public ResponseEntity<Void> deleteAccount(@AuthenticationPrincipal CustomUserPrincipal principal) {
         customerService.deleteCustomer(principal.getUserId());
-        supabaseAuthService.deleteUser(principal.getUserId());
         return ResponseEntity.noContent().build();
     }
 }
