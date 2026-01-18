@@ -1,6 +1,5 @@
 package com.example.dovaprojektbackend.service;
 
-import com.example.dovaprojektbackend.dto.CreateBikeshopRequest;
 import com.example.dovaprojektbackend.dto.UpdateBikeshopRequest;
 import com.example.dovaprojektbackend.model.Bikeshop;
 import com.example.dovaprojektbackend.repository.BikeshopRepository;
@@ -34,7 +33,6 @@ public class BikeShopService {
    public Bikeshop updateBikeshop(UpdateBikeshopRequest request, UUID shopId ){
        Bikeshop bikeshop = getBikeShopById(shopId);
 
-       if (bikeshop != null){
            bikeshop.setShopName(request.getShopName());
            bikeshop.setImageUrl(request.getImageUrl());
            bikeshop.setPhoneNumber(request.getPhoneNumber());
@@ -43,8 +41,6 @@ public class BikeShopService {
            bikeshop.setAddress(request.getAddress());
            bikeshop.setCity(request.getCity());
            bikeshop.setEmail(request.getEmail());
-       }
-
 
        return bikeShopRepository.save(bikeshop);
    }

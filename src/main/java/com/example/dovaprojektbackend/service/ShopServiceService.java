@@ -24,21 +24,23 @@ public class ShopServiceService {
     }
 
 
-
     @Transactional
     public ShopService createShopService(ShopService shopService) {
         if (shopService.getShopId() != null) {
-            Bikeshop bikeshop = bikeshopRepository.findById(shopService.getShopId())
-                    .orElseThrow(() -> new RuntimeException("Bikeshop not found with id: " + shopService.getShopId()));
-            shopService.setBikeshop(bikeshop);
+            throw new IllegalArgumentException("Shop ID er påkrævet");
         }
+        // ✅ Find bikeshop
+        Bikeshop bikeshop = bikeshopRepository.findById(shopService.getShopId())
+                .orElseThrow(() -> new RuntimeException("Bikeshop not found with id: " + shopService.getShopId()));
+        shopService.setBikeshop(bikeshop);
 
         return shopServiceRepository.save(shopService);
     }
 
+    // ✅ Read-only
     public List<ShopService> getShopServices(UUID shopId) {
         if (shopId == null) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("Shop ID må ikke være null");
         }
         return shopServiceRepository.findByBikeshop_ShopId(shopId);
     }
